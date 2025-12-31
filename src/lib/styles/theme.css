@@ -1,0 +1,90 @@
+/* Theme System - CSS Custom Properties */
+
+/* Dark Theme (Default) */
+:root {
+	/* Background colors */
+	--color-background: #0d1117;
+	--color-surface-1: #161b22;
+	--color-surface-2: #21262d;
+	--color-surface-3: #30363d;
+	--color-surface-4: #484f58;
+
+	/* Border colors */
+	--color-border: #30363d;
+	--color-border-hover: #484f58;
+
+	/* Text colors */
+	--color-text-primary: #f0f6fc;
+	--color-text-secondary: #8b949e;
+	--color-text-muted: #656d76;
+
+	/* Accent colors */
+	--color-accent: #58a6ff;
+	--color-accent-hover: #79c0ff;
+	--color-accent-active: #388bfd;
+
+	/* Semantic colors */
+	--color-success: #3fb950;
+	--color-success-hover: #56d364;
+	--color-warning: #d29922;
+	--color-warning-hover: #e3b341;
+	--color-error: #f85149;
+	--color-error-hover: #ff7b72;
+	--color-info: #58a6ff;
+	--color-info-hover: #79c0ff;
+}
+
+/* Light Theme */
+[data-theme='light'] {
+	/* Background colors */
+	--color-background: #ffffff;
+	--color-surface-1: #f6f8fa;
+	--color-surface-2: #eaeef2;
+	--color-surface-3: #d0d7de;
+	--color-surface-4: #afb8c1;
+
+	/* Border colors */
+	--color-border: #d0d7de;
+	--color-border-hover: #afb8c1;
+
+	/* Text colors */
+	--color-text-primary: #1f2328;
+	--color-text-secondary: #656d76;
+	--color-text-muted: #8b949e;
+
+	/* Accent colors */
+	--color-accent: #0969da;
+	--color-accent-hover: #0550ae;
+	--color-accent-active: #033d8b;
+
+	/* Semantic colors */
+	--color-success: #1a7f37;
+	--color-success-hover: #2da44e;
+	--color-warning: #9a6700;
+	--color-warning-hover: #bf8700;
+	--color-error: #cf222e;
+	--color-error-hover: #a40e26;
+	--color-info: #0969da;
+	--color-info-hover: #0550ae;
+}
+
+/* Theme transition */
+:root,
+[data-theme='light'] {
+	color-scheme: dark;
+	transition:
+		background-color var(--duration-normal) var(--easing-standard),
+		color var(--duration-normal) var(--easing-standard);
+}
+
+[data-theme='light'] {
+	color-scheme: light;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+	:root,
+	[data-theme='light'] {
+		transition: none;
+	}
+}

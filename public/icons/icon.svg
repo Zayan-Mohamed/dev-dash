@@ -1,0 +1,5 @@
+<!-- Simple SVG placeholder icon -->
+<svg width="128" height="128" xmlns="http://www.w3.org/2000/svg">
+  <rect width="128" height="128" fill="#0d1117"/>
+  <text x="64" y="74" font-family="monospace" font-size="48" fill="#58a6ff" text-anchor="middle">D</text>
+</svg>
