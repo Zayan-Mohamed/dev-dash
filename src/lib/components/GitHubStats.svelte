@@ -223,6 +223,19 @@
 		flex-direction: column;
 		gap: var(--space-4);
 		height: 100%;
+		overflow-y: auto;
+		overflow-x: hidden;
+	}
+
+	/* Hide scrollbar but keep functionality */
+	.github-stats::-webkit-scrollbar {
+		width: 0;
+		height: 0;
+	}
+
+	.github-stats {
+		scrollbar-width: none; /* Firefox */
+		-ms-overflow-style: none; /* IE and Edge */
 	}
 
 	.github-stats__header {

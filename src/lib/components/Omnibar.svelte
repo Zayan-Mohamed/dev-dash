@@ -214,7 +214,8 @@
 
 <style>
 	:global(.omnibar-card) {
-		max-width: 700px;
+		width: 100%;
+		max-width: 720px;
 		margin: 0 auto;
 		padding: 0;
 		overflow: visible;

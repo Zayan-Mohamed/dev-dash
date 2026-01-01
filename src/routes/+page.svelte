@@ -10,6 +10,7 @@
 	import Notepad from '$lib/components/Notepad.svelte';
 	import Weather from '$lib/components/Weather.svelte';
 	import GitHubStats from '$lib/components/GitHubStats.svelte';
+	import TechNews from '$lib/components/TechNews.svelte';
 	import { getTopSites } from '$lib/services/topSites';
 	import type { Site } from '$lib/services/topSites';
 	import { settings } from '$lib/stores/settings';
@@ -94,6 +95,11 @@
 				</div>
 			{:else}
 				<TopSites {sites} animationDelay={300} />
+			{/if}
+
+			<!-- Tech News -->
+			{#if $settings.showTechNews}
+				<TechNews animationDelay={400} />
 			{/if}
 		</div>
 	{/snippet}

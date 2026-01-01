@@ -244,6 +244,26 @@
 		flex-direction: column;
 		gap: var(--space-4);
 		height: 100%;
+		overflow-y: auto;
+		overflow-x: hidden;
+	}
+
+	/* Custom scrollbar for Weather */
+	.weather::-webkit-scrollbar {
+		width: 6px;
+	}
+
+	.weather::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	.weather::-webkit-scrollbar-thumb {
+		background: var(--color-surface-3);
+		border-radius: var(--radius-full);
+	}
+
+	.weather::-webkit-scrollbar-thumb:hover {
+		background: var(--color-surface-4);
 	}
 
 	.weather__header {

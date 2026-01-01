@@ -54,6 +54,8 @@
 		);
 		position: relative;
 		overflow: hidden;
+		max-width: 100%;
+		margin: 0;
 	}
 
 	:global(.clock-hero)::before {
