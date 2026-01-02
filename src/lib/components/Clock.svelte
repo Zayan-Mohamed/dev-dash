@@ -1,25 +1,42 @@
 <script lang="ts">
 	import { formatTime, getGreeting } from '$lib/utils/time';
 	import Card from './Card.svelte';
+	import { getData } from '$lib/services/storage';
+	import { onMount } from 'svelte';
 
-	let { use24Hour = false, showGreeting = true, animationDelay = 0 }: { use24Hour?: boolean; showGreeting?: boolean; animationDelay?: number } = $props();
-	
+	let {
+		use24Hour = false,
+		showGreeting = true,
+		animationDelay = 0
+	}: {
+		use24Hour?: boolean;
+		showGreeting?: boolean;
+		animationDelay?: number;
+	} = $props();
+
 	let time = $state('');
 	let greeting = $state('');
 	let date = $state('');
+	let displayName = $state('');
 
-	$effect(() => {
-		const updateTime = () => {
-			const now = new Date();
-			time = formatTime(now, use24Hour);
-			greeting = getGreeting();
-			date = now.toLocaleDateString('en-US', { 
-				weekday: 'long', 
-				year: 'numeric', 
-				month: 'long', 
-				day: 'numeric' 
-			});
-		};
+	function updateTime() {
+		const now = new Date();
+		time = formatTime(now, use24Hour);
+		greeting = getGreeting();
+		date = now.toLocaleDateString('en-US', {
+			weekday: 'long',
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric'
+		});
+	}
+
+	onMount(() => {
+		// Load settings asynchronously
+		getData('settings').then((settings) => {
+			displayName = settings.displayName ?? '';
+			showGreeting = settings.showGreeting ?? true;
+		});
 
 		updateTime();
 		const interval = setInterval(updateTime, 1000);
@@ -32,7 +49,7 @@
 	<div class="clock-hero__content">
 		{#if showGreeting}
 			<h2 class="clock-hero__greeting">
-				{greeting}
+				{greeting}{displayName ? `, ${displayName}` : ''}
 			</h2>
 		{/if}
 		<div class="clock-hero__time">
@@ -65,17 +82,14 @@
 		left: -50%;
 		width: 200%;
 		height: 200%;
-		background: radial-gradient(
-			circle,
-			rgba(88, 166, 255, 0.1) 0%,
-			transparent 70%
-		);
+		background: radial-gradient(circle, rgba(88, 166, 255, 0.1) 0%, transparent 70%);
 		animation: glow-pulse 4s ease-in-out infinite;
 		pointer-events: none;
 	}
 
 	@keyframes glow-pulse {
-		0%, 100% {
+		0%,
+		100% {
 			opacity: 0.5;
 			transform: scale(1);
 		}
@@ -103,7 +117,7 @@
 		color: var(--color-text-secondary);
 		letter-spacing: var(--letter-spacing-wide);
 		font-weight: var(--font-weight-medium);
-		text-transform: lowercase;
+		/* text-transform: lowercase; */
 		animation: fade-in var(--duration-slow) var(--easing-decelerate);
 	}
 
@@ -114,7 +128,7 @@
 		color: var(--color-text-primary);
 		font-variant-numeric: tabular-nums;
 		letter-spacing: var(--letter-spacing-tight);
-		text-shadow: 
+		text-shadow:
 			0 0 20px rgba(88, 166, 255, 0.3),
 			0 0 40px rgba(88, 166, 255, 0.2);
 		animation: time-transition var(--duration-normal) var(--easing-standard);

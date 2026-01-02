@@ -1,39 +1,106 @@
-# DevDash - Developer New Tab Extension
+<div align="center">
+  <img src="public/icons/icon-128.png" alt="DevDash Logo" width="120" height="120">
+  
+  # DevDash 🚀
+  
+  **A Zero-Latency Developer New Tab Extension**
+  
+  [![Chrome Extension](https://img.shields.io/badge/Chrome-Extension-4285F4?logo=googlechrome&logoColor=white)](https://chrome.google.com/webstore)
+  [![Manifest V3](https://img.shields.io/badge/Manifest-V3-green?logo=googlechrome)](https://developer.chrome.com/docs/extensions/mv3/)
+  [![SvelteKit](https://img.shields.io/badge/SvelteKit-2.x-FF3E00?logo=svelte&logoColor=white)](https://kit.svelte.dev/)
+  [![Svelte](https://img.shields.io/badge/Svelte-5.45-FF3E00?logo=svelte&logoColor=white)](https://svelte.dev/)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+  [![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+  [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+  [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-A zero-latency, keyboard-first Chrome Extension that replaces your new tab with a developer-focused dashboard built with **Svelte 5** and **Tailwind CSS v4**.
+  <p align="center">
+    <strong>Replace your Chrome new tab with a blazing-fast, keyboard-first developer dashboard</strong>
+  </p>
 
-![DevDash Screenshot](https://via.placeholder.com/800x400?text=DevDash+Screenshot)
+  <p align="center">
+    <a href="#-features">Features</a> •
+    <a href="#-screenshots">Screenshots</a> •
+    <a href="#-installation">Installation</a> •
+    <a href="#-usage">Usage</a> •
+    <a href="#-development">Development</a> •
+    <a href="#-tech-stack">Tech Stack</a>
+  </p>
+</div>
+
+---
+
+## 📸 Screenshots
+
+<div align="center">
+  <img src="public/image.png" alt="DevDash Main View" width="800">
+  <p><i>Main dashboard with clock, top sites, and omnibar</i></p>
+  
+  <img src="public/img2.png" alt="DevDash Widgets" width="800">
+  <p><i>Optional widgets: Pomodoro, Notepad, Weather, and more</i></p>
+  
+  <img src="public/img3.png" alt="DevDash Settings" width="800">
+  <p><i>Customizable settings panel</i></p>
+</div>
+
+---
 
 ## ✨ Features
 
-- ⚡ **Zero Latency** - Instant load with no framework overhead
-- ⌨️ **Keyboard First** - Command palette with shortcuts
-- 🎨 **Hacker Aesthetic** - Dark mode with monospace fonts (GitHub theme)
-- 🔒 **Privacy Focused** - All data stored locally, no tracking
-- 🚀 **Svelte 5** - Built with latest runes syntax
-- 💅 **Tailwind CSS v4** - Modern utility-first styling
-- 📱 **Responsive** - Works on all screen sizes
+### 🎯 Core Features
 
-## 🎯 Quick Commands
+- ⚡ **Zero Latency** - Instant page load with compiled Svelte (no runtime overhead)
+- ⌨️ **Keyboard First** - Command palette with Vim-inspired shortcuts
+- 🎨 **Hacker Aesthetic** - GitHub Dark Dimmed theme with monospace fonts
+- 🔒 **Privacy Focused** - 100% local storage, zero tracking, no external calls
+- 🚀 **Modern Stack** - Built with Svelte 5 (runes), SvelteKit, TypeScript, Tailwind v4
 
-Type in the omnibar:
+### 🧩 Widgets & Components
 
-- `g <query>` → Google search
-- `gh <query>` → GitHub search  
-- `l <port>` → Open localhost (default: 3000)
-- `/<command>` → Custom commands (extensible)
-- Direct URLs or search queries
+| Widget              | Description                                               | Status      |
+| ------------------- | --------------------------------------------------------- | ----------- |
+| 🕐 **Clock**        | Large digital clock with 12/24h format & dynamic greeting | ✅ Core     |
+| 🔗 **Top Sites**    | Most visited sites from Chrome history                    | ✅ Core     |
+| ⌨️ **Omnibar**      | Universal search/command bar (Google, GitHub, localhost)  | ✅ Core     |
+| 🍅 **Pomodoro**     | Focus timer with work/break intervals                     | ✅ Optional |
+| 📝 **Notepad**      | Quick scratchpad with auto-save                           | ✅ Optional |
+| 🌤️ **Weather**      | Local weather widget                                      | ✅ Optional |
+| 📰 **Tech News**    | Latest developer news feed                                | ✅ Optional |
+| 📊 **GitHub Stats** | Personal GitHub activity & stats                          | ✅ Optional |
 
-**History Navigation**: Use ↑/↓ arrow keys
+### ⚡ Omnibar Commands
+
+Type in the command bar:
+
+| Command          | Action          | Example                     |
+| ---------------- | --------------- | --------------------------- |
+| `g <query>`      | Google Search   | `g svelte tutorial`         |
+| `gh <query>`     | GitHub Search   | `gh vite`                   |
+| `l <port>`       | Open Localhost  | `l 3000` → `localhost:3000` |
+| `/<command>`     | Custom Commands | `/help`                     |
+| **Direct URL**   | Navigate        | `github.com`                |
+| **Search Query** | Google Search   | `javascript promises`       |
+
+**Navigation**: Use ↑/↓ arrow keys to browse command history
+
+### ⌨️ Keyboard Shortcuts
+
+- `Ctrl/Cmd + ,` - Open Settings
+- `Escape` - Close modals
+- `↑` / `↓` - Navigate command history in Omnibar
+
+---
 
 ## 🚀 Installation
 
 ### Option 1: Load Unpacked (Development)
 
 ```bash
-# Clone and install
-git clone <your-repo>
+# Clone the repository
+git clone https://github.com/Zayan-Mohamed/dev-dash.git
 cd dev-dash
+
+# Install dependencies (requires pnpm)
 pnpm install
 
 # Build the extension
@@ -41,12 +108,12 @@ pnpm build
 
 # Load in Chrome:
 # 1. Open chrome://extensions
-# 2. Enable "Developer mode"
+# 2. Enable "Developer mode" (top-right toggle)
 # 3. Click "Load unpacked"
-# 4. Select the build/ directory
+# 4. Select the `build/` directory
 ```
 
-### Option 2: From Release (Coming Soon)
+### Option 2: From Chrome Web Store (Coming Soon)
 
 Download the latest `.crx` or `.zip` from [Releases](#).
 
@@ -71,14 +138,14 @@ pnpm lint && pnpm format
 
 ## 📦 Tech Stack
 
-| Technology | Version | Purpose |
-|-----------|---------|---------|
-| Svelte | 5.45+ | UI framework with runes |
-| SvelteKit | 2.49+ | Build tooling |
-| TypeScript | 5.9+ | Type safety |
-| Tailwind CSS | 4.1+ | Styling |
-| Vite | 7.2+ | Bundler |
-| lucide-svelte | latest | Icons |
+| Technology    | Version | Purpose                 |
+| ------------- | ------- | ----------------------- |
+| Svelte        | 5.45+   | UI framework with runes |
+| SvelteKit     | 2.49+   | Build tooling           |
+| TypeScript    | 5.9+    | Type safety             |
+| Tailwind CSS  | 4.1+    | Styling                 |
+| Vite          | 7.2+    | Bundler                 |
+| lucide-svelte | latest  | Icons                   |
 
 ## 📁 Project Structure
 
@@ -107,11 +174,11 @@ build/                  # Built extension (git-ignored)
 Edit component classes or `app.css`. Current theme (GitHub Dark):
 
 ```css
---bg-primary: #0d1117
---bg-secondary: #161b22
---border: #30363d
---text-main: #c9d1d9
---accent: #58a6ff
+--bg-primary: #0d1117;
+--bg-secondary: #161b22;
+--border: #30363d;
+--text-main: #c9d1d9;
+--accent: #58a6ff;
 ```
 
 ### Add Commands
@@ -134,45 +201,173 @@ In `src/routes/+page.svelte`:
 <Clock use24Hour={true} showGreeting={false} />
 ```
 
+---
+
 ## 🧩 Architecture
 
-### Services
+### 🔧 Services Layer
 
-- **topSites.ts** - Chrome API wrapper with dev fallback
-- **storage.ts** - chrome.storage.local with localStorage fallback
+- **topSites.ts** - Chrome `topSites` API wrapper with mock data fallback for development
+- **storage.ts** - Unified storage using `chrome.storage.local` with `localStorage` fallback
 
-### Components (Svelte 5 Runes)
+### 🎨 Component Design (Svelte 5 Runes)
 
-- **Clock** - `$state` + `$effect` for time updates
-- **TopSites** - Pure presentation with `$props`
-- **Omnibar** - Command parser + history with `$state`
+All components built with Svelte 5's new runes syntax:
 
-### Type Safety
+- **Clock.svelte** - Uses `$state` for reactive time and `$effect` for interval management
+- **TopSites.svelte** - Pure presentation component with typed `$props`
+- **Omnibar.svelte** - Command parser with `$state` for history and input
+- **Settings.svelte** - Modal with two-way binding to settings store
+- **ViewportLayout.svelte** - Responsive grid system using CSS Grid
 
-- Strict TypeScript mode enabled
-- No `any` types
+### 🔒 Type Safety
+
+```typescript
+// Strict TypeScript configuration
+- strictNullChecks: true
+- noImplicitAny: true
+- No any types allowed
 - Interface definitions for all data structures
+```
 
-## 📚 Documentation
+Example type definitions:
 
-- [Installation Guide](INSTALLATION.md) - Detailed setup instructions
-- [Build Summary](BUILD_SUMMARY.md) - What's been built
-- [Svelte 5 Docs](https://svelte.dev/docs/svelte)
-- [Tailwind CSS](https://tailwindcss.com/docs)
+```typescript
+interface Site {
+	title: string;
+	url: string;
+}
 
-## 🤝 Contributing
-
-Contributions welcome! Please:
-
-1. Fork the repo
-2. Create a feature branch
-3. Make your changes (with tests if applicable)
-4. Submit a PR
-
-## 📝 License
-
-MIT © 2025
+interface StorageData {
+	settings: {
+		use24Hour: boolean;
+		showGreeting: boolean;
+		githubUsername: string;
+		customLinks: string[];
+	};
+}
+```
 
 ---
 
-**Built with Svelte 5 + Tailwind CSS + ❤️**
+## 🔍 How It Works
+
+### Build Pipeline
+
+1. **SvelteKit** compiles components to vanilla JS
+2. **Vite** bundles assets with code splitting
+3. **Post-build script** fixes inline CSP issues
+4. **Manifest + icons** copied to `build/` directory
+5. Output is a standard Manifest V3 extension
+
+### Performance Optimizations
+
+- ⚡ **No Runtime Framework** - Svelte compiles to vanilla JS
+- 📦 **Tree-Shaking** - Only imports used icons/components
+- 🎯 **Code Splitting** - Lazy-load optional widgets
+- 💾 **Local-First** - No network calls on initial load
+- 🖼️ **No Layout Shift** - Fixed background color in HTML
+
+---
+
+## 🐛 Troubleshooting
+
+### Extension doesn't load
+
+```bash
+# Rebuild and reload
+pnpm build
+# Then reload extension in chrome://extensions
+```
+
+### Top Sites not showing
+
+- Check Chrome permissions in `chrome://extensions`
+- Ensure `topSites` permission is granted
+
+### Build errors
+
+```bash
+# Clear cache and reinstall
+rm -rf node_modules .svelte-kit build
+pnpm install
+pnpm build
+```
+
+---
+
+## 🗺️ Roadmap
+
+- [ ] Chrome Web Store release
+- [ ] Firefox/Edge support
+- [ ] Custom widget API
+- [ ] Cloud sync (optional)
+- [ ] Theme customization UI
+- [ ] Import/Export settings
+- [ ] Internationalization (i18n)
+
+---
+
+## 📖 Resources
+
+- [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview)
+- [SvelteKit Documentation](https://kit.svelte.dev/docs)
+- [Chrome Extension Docs](https://developer.chrome.com/docs/extensions/mv3/)
+- [Tailwind CSS v4 Beta](https://tailwindcss.com/docs)
+- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
+
+---
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome!
+
+1. **Fork the repository**
+2. **Create your feature branch** (`git checkout -b feature/AmazingFeature`)
+3. **Commit your changes** (`git commit -m 'Add some AmazingFeature'`)
+4. **Push to the branch** (`git push origin feature/AmazingFeature`)
+5. **Open a Pull Request**
+
+Please ensure:
+
+- Code follows TypeScript strict mode
+- Components use Svelte 5 runes syntax
+- All Chrome API calls have environment checks
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 👤 Author
+
+**Zayan Mohamed**
+
+- GitHub: [@Zayan-Mohamed](https://github.com/Zayan-Mohamed)
+- Repository: [dev-dash](https://github.com/Zayan-Mohamed/dev-dash)
+
+---
+
+## ⭐ Show Your Support
+
+Give a ⭐️ if this project helped you!
+
+---
+
+## 🙏 Acknowledgments
+
+- [Svelte Team](https://svelte.dev/) for the amazing framework
+- [Lucide](https://lucide.dev/) for beautiful icons
+- [GitHub](https://github.com/) for design inspiration
+- All contributors and users
+
+---
+
+<div align="center">
+  <strong>Built with Svelte 5 + Tailwind CSS v4 + TypeScript + ❤️</strong>
+  <br><br>
+  <a href="#-features">⬆ Back to Top</a>
+</div>
