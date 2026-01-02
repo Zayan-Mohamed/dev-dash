@@ -1,194 +1,496 @@
 <script lang="ts">
-	import { X } from 'lucide-svelte';
+	import { X, Settings as SettingsIcon, Globe, Layout, User } from 'lucide-svelte';
 	import { settings } from '$lib/stores/settings';
 	import { fade, fly } from 'svelte/transition';
-	import { onMount } from 'svelte';
 
 	interface Props {
 		isOpen: boolean;
 	}
 
 	let { isOpen = $bindable() }: Props = $props();
-	let dialogElement = $state<HTMLDivElement>();
 
 	function close() {
 		isOpen = false;
 	}
 
-	// Focus trap for accessibility
-	onMount(() => {
-		if (isOpen && dialogElement) {
-			const focusableElements = dialogElement.querySelectorAll(
-				'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-			);
-			const firstElement = focusableElements[0] as HTMLElement;
-			const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
-
-			firstElement?.focus();
-
-			const handleTabKey = (e: KeyboardEvent) => {
-				if (e.key !== 'Tab') return;
-
-				if (e.shiftKey) {
-					if (document.activeElement === firstElement) {
-						e.preventDefault();
-						lastElement?.focus();
-					}
-				} else {
-					if (document.activeElement === lastElement) {
-						e.preventDefault();
-						firstElement?.focus();
-					}
-				}
-			};
-
-			document.addEventListener('keydown', handleTabKey);
-			return () => document.removeEventListener('keydown', handleTabKey);
+	const settingsSections = [
+		{
+			title: 'Display',
+			icon: Layout,
+			settings: [
+				{ key: 'use24Hour', label: '24-Hour Clock', description: 'Use 24-hour time format' },
+				{ key: 'showGreeting', label: 'Show Greeting', description: 'Display personalized greeting' }
+			]
+		},
+		{
+			title: 'Components',
+			icon: Globe,
+			settings: [
+				{ key: 'showWeather', label: 'Weather Widget', description: 'Show weather information' },
+				{ key: 'showGitHubStats', label: 'GitHub Stats', description: 'Display GitHub statistics' },
+				{ key: 'showTechNews', label: 'Tech News', description: 'Show technology news feed' },
+				{ key: 'showTopSites', label: 'Top Sites', description: 'Display frequently visited sites' },
+				{ key: 'showPomodoro', label: 'Pomodoro Timer', description: 'Enable focus timer' },
+				{ key: 'showNotepad', label: 'Notepad', description: 'Enable quick notes' }
+			]
+		},
+		{
+			title: 'Profile',
+			icon: User,
+			inputs: [
+				{ key: 'displayName', label: 'Display Name', placeholder: 'e.g. Linus', description: 'Name shown in greeting' },
+				{ key: 'githubUsername', label: 'GitHub Username', placeholder: 'e.g. torvalds', description: 'Username for GitHub stats' }
+			]
 		}
-	});
+	];
 </script>
 
 {#if isOpen}
-	<!-- svelte-ignore a11y_click_events_have_key_events -->
-	<!-- svelte-ignore a11y_no_static_element_interactions -->
-	<div
-		transition:fade={{ duration: 200 }}
-		class="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4"
+	<!-- Backdrop -->
+	<button
+		class="settings-backdrop"
 		onclick={close}
-		role="presentation"
+		transition:fade={{ duration: 200 }}
+		aria-label="Close settings"
+	></button>
+
+	<!-- Settings Panel -->
+	<div
+		class="settings-panel"
+		transition:fly={{ x: 400, duration: 300, opacity: 1 }}
+		role="dialog"
+		aria-modal="true"
+		aria-labelledby="settings-title"
 	>
-		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<!-- svelte-ignore a11y_no_static_element_interactions -->
-		<div
-			bind:this={dialogElement}
-			transition:fly={{ y: 20, duration: 200 }}
-			class="bg-[#161b22] border border-[#30363d] rounded-xl p-6 sm:p-8 w-full max-w-md shadow-2xl"
-			onclick={(e) => e.stopPropagation()}
-			role="dialog"
-			aria-modal="true"
-			aria-labelledby="settings-title"
-			tabindex="-1"
-		>
-			<div class="flex justify-between items-center mb-6">
-				<h2 id="settings-title" class="text-xl font-mono font-bold text-[#c9d1d9]">Settings</h2>
-				<button
-					onclick={close}
-					class="text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 p-1.5 rounded-lg transition-all duration-200 cursor-pointer"
-					aria-label="Close settings"
-					type="button"
-				>
-					<X size={20} aria-hidden="true" />
-				</button>
-			</div>
-
-			<div class="space-y-4" role="group" aria-label="Settings options">
-				<label class="flex items-center justify-between cursor-pointer group">
-					<span class="text-zinc-400 font-mono group-hover:text-zinc-300">24-Hour Clock</span>
-					<input
-						type="checkbox"
-						checked={$settings.use24Hour}
-						onchange={(e) => settings.update(s => ({ ...s, use24Hour: e.currentTarget.checked }))}
-						class="accent-[#58a6ff] w-4 h-4 cursor-pointer"
-						aria-label="Toggle 24-hour clock format"
-					/>
-				</label>
-
-				<label class="flex items-center justify-between cursor-pointer group">
-					<span class="text-zinc-400 font-mono group-hover:text-zinc-300">Show Greeting</span>
-					<input
-						type="checkbox"
-						checked={$settings.showGreeting}
-						onchange={(e) => settings.update(s => ({ ...s, showGreeting: e.currentTarget.checked }))}
-						class="accent-[#58a6ff] w-4 h-4 cursor-pointer"
-						aria-label="Toggle greeting message"
-					/>
-				</label>
-
-				<label class="flex items-center justify-between cursor-pointer group">
-					<span class="text-zinc-400 font-mono group-hover:text-zinc-300">Show Pomodoro</span>
-					<input
-						type="checkbox"
-						checked={$settings.showPomodoro}
-						onchange={(e) => settings.update(s => ({ ...s, showPomodoro: e.currentTarget.checked }))}
-						class="accent-[#58a6ff] w-4 h-4 cursor-pointer"
-						aria-label="Toggle Pomodoro timer widget"
-					/>
-				</label>
-
-				<label class="flex items-center justify-between cursor-pointer group">
-					<span class="text-zinc-400 font-mono group-hover:text-zinc-300">Show Scratchpad</span>
-					<input
-						type="checkbox"
-						checked={$settings.showNotepad}
-						onchange={(e) => settings.update(s => ({ ...s, showNotepad: e.currentTarget.checked }))}
-						class="accent-[#58a6ff] w-4 h-4 cursor-pointer"
-						aria-label="Toggle scratchpad widget"
-					/>
-				</label>
-
-				<div class="h-px bg-zinc-800 my-4" role="separator" aria-hidden="true"></div>
-
-				<label class="flex items-center justify-between cursor-pointer group">
-					<span class="text-zinc-400 font-mono group-hover:text-zinc-300">Show Weather</span>
-					<input
-						type="checkbox"
-						checked={$settings.showWeather}
-						onchange={(e) => settings.update(s => ({ ...s, showWeather: e.currentTarget.checked }))}
-						class="accent-[#58a6ff] w-4 h-4 cursor-pointer"
-						aria-label="Toggle weather widget"
-					/>
-				</label>
-
-				<label class="flex items-center justify-between cursor-pointer group">
-					<span class="text-zinc-400 font-mono group-hover:text-zinc-300">Show Tech News</span>
-					<input
-						type="checkbox"
-						checked={$settings.showTechNews}
-						onchange={(e) => settings.update(s => ({ ...s, showTechNews: e.currentTarget.checked }))}
-						class="accent-[#58a6ff] w-4 h-4 cursor-pointer"
-						aria-label="Toggle tech news widget"
-					/>
-				</label>
-
-				<label class="flex items-center justify-between cursor-pointer group">
-					<span class="text-zinc-400 font-mono group-hover:text-zinc-300">Show GitHub Stats</span>
-					<input
-						type="checkbox"
-						checked={$settings.showGitHubStats}
-						onchange={(e) => settings.update(s => ({ ...s, showGitHubStats: e.currentTarget.checked }))}
-						class="accent-[#58a6ff] w-4 h-4 cursor-pointer"
-						aria-label="Toggle GitHub stats widget"
-					/>
-				</label>
-
-				<div class="h-px bg-zinc-800 my-4" role="separator" aria-hidden="true"></div>
-
-				<div class="flex flex-col gap-2">
-					<label for="github-username" class="text-xs font-mono text-zinc-500 uppercase">GitHub Username</label>
-					<input
-						id="github-username"
-						type="text"
-						value={$settings.githubUsername}
-						oninput={(e) => settings.update(s => ({ ...s, githubUsername: e.currentTarget.value }))}
-						placeholder="e.g. torvalds"
-						class="bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-sm font-mono text-zinc-200 focus:border-blue-500 outline-none"
-						aria-label="GitHub username"
-					/>
+		<!-- Header -->
+		<div class="settings-header">
+			<div class="settings-header-content">
+				<div class="settings-icon-wrapper">
+					<SettingsIcon size={24} />
 				</div>
-
-				<div class="flex flex-col gap-2">
-					<label for="display-name" class="text-xs font-mono text-zinc-500 uppercase">Display Name</label>
-					<input
-						id="display-name"
-						type="text"
-						value={$settings.displayName}
-						oninput={(e) => settings.update(s => ({ ...s, displayName: e.currentTarget.value }))}
-						placeholder="e.g. Linus"
-						class="bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-sm font-mono text-zinc-200 focus:border-blue-500 outline-none"
-						aria-label="Display name for greeting"
-					/>
+				<div>
+					<h2 id="settings-title" class="settings-title">Settings</h2>
+					<p class="settings-subtitle">Customize your dashboard</p>
 				</div>
 			</div>
+			<button
+				onclick={close}
+				class="settings-close"
+				aria-label="Close settings"
+				type="button"
+			>
+				<X size={20} />
+			</button>
+		</div>
+
+		<!-- Content -->
+		<div class="settings-content">
+			{#each settingsSections as section, i}
+				{@const IconComponent = section.icon}
+				<div class="settings-section" style="--section-delay: {i * 50}ms">
+					<div class="settings-section-header">
+						<IconComponent size={18} />
+						<h3>{section.title}</h3>
+					</div>
+
+					{#if section.settings}
+						<div class="settings-list">
+							{#each section.settings as setting, j}
+								<label
+									class="settings-item"
+									style="--item-delay: {(i * 50) + (j * 30)}ms"
+								>
+									<div class="settings-item-content">
+										<span class="settings-item-label">{setting.label}</span>
+										<span class="settings-item-description">{setting.description}</span>
+									</div>
+									<div class="settings-toggle">
+										<input
+											type="checkbox"
+										checked={$settings[setting.key as keyof typeof $settings] as boolean}
+											onchange={(e) => settings.update(s => ({ ...s, [setting.key]: e.currentTarget.checked }))}
+											class="settings-toggle-input"
+										/>
+										<div class="settings-toggle-slider"></div>
+									</div>
+								</label>
+							{/each}
+						</div>
+					{/if}
+
+					{#if section.inputs}
+						<div class="settings-inputs">
+							{#each section.inputs as input, j}
+								<div
+									class="settings-input-item"
+									style="--item-delay: {(i * 50) + (j * 30)}ms"
+								>
+									<label for={input.key} class="settings-input-label">
+										{input.label}
+									</label>
+									<span class="settings-input-description">{input.description}</span>
+									<input
+										id={input.key}
+										type="text"
+										value={$settings[input.key as keyof typeof $settings] as string}
+										oninput={(e) => settings.update(s => ({ ...s, [input.key]: e.currentTarget.value }))}
+										placeholder={input.placeholder}
+										class="settings-input-field"
+									/>
+								</div>
+							{/each}
+						</div>
+					{/if}
+				</div>
+			{/each}
+		</div>
+
+		<!-- Footer -->
+		<div class="settings-footer">
+			<p class="settings-footer-text">
+				Changes are saved automatically
+			</p>
 		</div>
 	</div>
 {/if}
+
+<style>
+	.settings-backdrop {
+		position: fixed;
+		inset: 0;
+		background: rgba(0, 0, 0, 0.5);
+		backdrop-filter: blur(4px);
+		-webkit-backdrop-filter: blur(4px);
+		z-index: var(--z-modal-backdrop, 1000);
+		border: none;
+		cursor: default;
+	}
+
+	.settings-panel {
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		width: 480px;
+		max-width: 90vw;
+		background: rgba(22, 27, 34, 0.98);
+		backdrop-filter: blur(24px) saturate(180%);
+		-webkit-backdrop-filter: blur(24px) saturate(180%);
+		border-left: 1px solid rgba(48, 54, 61, 0.8);
+		box-shadow:
+			-8px 0 32px -8px rgba(0, 0, 0, 0.4),
+			0 0 0 1px rgba(255, 255, 255, 0.05),
+			inset 0 1px 0 rgba(255, 255, 255, 0.1);
+		z-index: var(--z-modal, 1100);
+		display: flex;
+		flex-direction: column;
+	}
+
+	.settings-header {
+		padding: var(--space-6, 1.5rem);
+		border-bottom: 1px solid rgba(48, 54, 61, 0.5);
+		background: rgba(22, 27, 34, 0.95);
+	}
+
+	.settings-header-content {
+		display: flex;
+		align-items: center;
+		gap: var(--space-4, 1rem);
+		margin-bottom: var(--space-2, 0.5rem);
+	}
+
+	.settings-icon-wrapper {
+		width: 48px;
+		height: 48px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: linear-gradient(135deg, #58a6ff 0%, #1f6feb 100%);
+		border-radius: var(--radius-xl, 16px);
+		color: white;
+		box-shadow: 0 4px 12px rgba(88, 166, 255, 0.4);
+	}
+
+	.settings-title {
+		font-size: var(--font-size-xl, 1.25rem);
+		font-weight: var(--font-weight-bold, 700);
+		color: var(--color-text-primary, #c9d1d9);
+		margin: 0;
+	}
+
+	.settings-subtitle {
+		font-size: var(--font-size-sm, 0.875rem);
+		color: var(--color-text-secondary, #8b949e);
+		margin: 0;
+	}
+
+	.settings-close {
+		position: absolute;
+		top: var(--space-4, 1rem);
+		right: var(--space-4, 1rem);
+		width: 40px;
+		height: 40px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(48, 54, 61, 0.8);
+		border: 1px solid rgba(88, 166, 255, 0.3);
+		border-radius: var(--radius-lg, 12px);
+		color: var(--color-text-secondary, #8b949e);
+		cursor: pointer;
+		transition: all var(--duration-fast);
+	}
+
+	.settings-close:hover {
+		background: rgba(88, 166, 255, 0.1);
+		border-color: rgba(88, 166, 255, 0.6);
+		color: var(--color-accent-blue, #58a6ff);
+		transform: rotate(90deg);
+	}
+
+	.settings-content {
+		flex: 1;
+		padding: var(--space-6, 1.5rem);
+		overflow-y: auto;
+		scrollbar-width: thin;
+		scrollbar-color: rgba(88, 166, 255, 0.3) transparent;
+	}
+
+	.settings-content::-webkit-scrollbar {
+		width: 6px;
+	}
+
+	.settings-content::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	.settings-content::-webkit-scrollbar-thumb {
+		background: rgba(88, 166, 255, 0.3);
+		border-radius: 3px;
+	}
+
+	.settings-content::-webkit-scrollbar-thumb:hover {
+		background: rgba(88, 166, 255, 0.5);
+	}
+
+	.settings-section {
+		margin-bottom: var(--space-8, 2rem);
+		animation: slideIn var(--duration-normal) var(--easing-decelerate) var(--section-delay, 0ms) both;
+	}
+
+	.settings-section-header {
+		display: flex;
+		align-items: center;
+		gap: var(--space-3, 0.75rem);
+		margin-bottom: var(--space-4, 1rem);
+		padding-bottom: var(--space-2, 0.5rem);
+		border-bottom: 1px solid rgba(48, 54, 61, 0.3);
+	}
+
+	.settings-section-header h3 {
+		font-size: var(--font-size-lg, 1.125rem);
+		font-weight: var(--font-weight-semibold, 600);
+		color: var(--color-text-primary, #c9d1d9);
+		margin: 0;
+	}
+
+	.settings-list {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-3, 0.75rem);
+	}
+
+	.settings-item {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: var(--space-4, 1rem);
+		background: rgba(48, 54, 61, 0.3);
+		border: 1px solid rgba(48, 54, 61, 0.5);
+		border-radius: var(--radius-lg, 12px);
+		cursor: pointer;
+		transition: all var(--duration-fast) var(--easing-standard);
+		animation: fadeIn var(--duration-normal) var(--easing-decelerate) var(--item-delay, 0ms) both;
+	}
+
+	.settings-item:hover {
+		background: rgba(88, 166, 255, 0.05);
+		border-color: rgba(88, 166, 255, 0.3);
+		transform: translateX(4px);
+	}
+
+	.settings-item-content {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-1, 0.25rem);
+		flex: 1;
+	}
+
+	.settings-item-label {
+		font-size: var(--font-size-base, 1rem);
+		font-weight: var(--font-weight-medium, 500);
+		color: var(--color-text-primary, #c9d1d9);
+	}
+
+	.settings-item-description {
+		font-size: var(--font-size-sm, 0.875rem);
+		color: var(--color-text-secondary, #8b949e);
+	}
+
+	.settings-toggle {
+		position: relative;
+		width: 52px;
+		height: 28px;
+		flex-shrink: 0;
+	}
+
+	.settings-toggle-input {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		opacity: 0;
+		cursor: pointer;
+		z-index: 2;
+	}
+
+	.settings-toggle-slider {
+		position: absolute;
+		inset: 0;
+		background: rgba(48, 54, 61, 0.8);
+		border: 1px solid rgba(48, 54, 61, 0.5);
+		border-radius: 14px;
+		transition: all var(--duration-fast) var(--easing-standard);
+	}
+
+	.settings-toggle-slider::before {
+		content: '';
+		position: absolute;
+		top: 2px;
+		left: 2px;
+		width: 20px;
+		height: 20px;
+		background: var(--color-text-secondary, #8b949e);
+		border-radius: 10px;
+		transition: all var(--duration-fast) var(--easing-standard);
+	}
+
+	.settings-toggle-input:checked + .settings-toggle-slider {
+		background: linear-gradient(135deg, #58a6ff 0%, #1f6feb 100%);
+		border-color: rgba(88, 166, 255, 0.5);
+		box-shadow: 0 0 12px rgba(88, 166, 255, 0.4);
+	}
+
+	.settings-toggle-input:checked + .settings-toggle-slider::before {
+		background: white;
+		transform: translateX(24px);
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+	}
+
+	.settings-inputs {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-4, 1rem);
+	}
+
+	.settings-input-item {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-2, 0.5rem);
+		padding: var(--space-4, 1rem);
+		background: rgba(255, 255, 255, 0.02);
+		border: 1px solid rgba(255, 255, 255, 0.05);
+		border-radius: var(--radius-lg, 12px);
+		animation: item-enter var(--duration-fast) var(--easing-decelerate);
+		animation-delay: var(--item-delay, 0ms);
+		animation-fill-mode: both;
+	}
+
+	.settings-input-label {
+		font-size: var(--font-size-sm, 0.875rem);
+		font-weight: var(--font-weight-medium, 500);
+		color: var(--color-text-primary, #c9d1d9);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.settings-input-description {
+		font-size: var(--font-size-xs, 0.75rem);
+		color: var(--color-text-muted, #8b949e);
+	}
+
+	.settings-input-field {
+		padding: var(--space-3, 0.75rem);
+		background: rgba(22, 27, 34, 0.8);
+		border: 1px solid rgba(48, 54, 61, 0.8);
+		border-radius: var(--radius-md, 8px);
+		color: var(--color-text-primary, #c9d1d9);
+		font-size: var(--font-size-sm, 0.875rem);
+		font-family: var(--font-mono, 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace);
+		transition: all var(--duration-fast);
+	}
+
+	.settings-input-field:focus {
+		outline: none;
+		border-color: var(--color-accent-blue, #58a6ff);
+		box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
+		background: rgba(22, 27, 34, 0.9);
+	}
+
+	.settings-input-field::placeholder {
+		color: var(--color-text-muted, #8b949e);
+	}
+
+	.settings-footer {
+		padding: var(--space-6, 1.5rem);
+		border-top: 1px solid rgba(48, 54, 61, 0.5);
+		background: rgba(22, 27, 34, 0.95);
+		text-align: center;
+	}
+
+	.settings-footer-text {
+		font-size: var(--font-size-sm, 0.875rem);
+		color: var(--color-text-secondary, #8b949e);
+		margin: 0;
+	}
+
+	@keyframes slideIn {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.settings-panel {
+			width: 100vw;
+			max-width: none;
+		}
+
+		.settings-header {
+			padding: var(--space-4, 1rem);
+		}
+
+		.settings-content {
+			padding: var(--space-4, 1rem);
+		}
+
+		.settings-footer {
+			padding: var(--space-4, 1rem);
+		}
+	}
+</style>

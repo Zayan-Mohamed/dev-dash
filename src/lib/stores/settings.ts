@@ -6,9 +6,10 @@ const DEFAULT_SETTINGS: StorageData['settings'] = {
 	showGreeting: true,
 	showPomodoro: false,
 	showNotepad: false,
-	showWeather: false,
-	showTechNews: false,
-	showGitHubStats: false,
+	showWeather: true,
+	showTechNews: true,
+	showGitHubStats: true,
+	showTopSites: false,
 	githubUsername: '',
 	displayName: '',
 	customLinks: []
@@ -24,7 +25,7 @@ function createSettingsStore() {
 			setData('settings', value);
 		},
 		update: (updater: (value: StorageData['settings']) => StorageData['settings']) => {
-			update((current) => {
+			update((current: StorageData['settings']) => {
 				const newValue = updater(current);
 				setData('settings', newValue);
 				return newValue;

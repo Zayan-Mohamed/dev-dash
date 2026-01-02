@@ -232,6 +232,24 @@
 						<span class="weather__tool-icon">📦</span>
 						<span class="weather__tool-label">npm</span>
 					</a>
+					<a 
+						href="https://www.youtube.com" 
+						target="_blank" 
+						rel="noopener noreferrer"
+						class="weather__tool"
+					>
+						<span class="weather__tool-icon">📺</span>
+						<span class="weather__tool-label">YouTube</span>
+					</a>
+					<a 
+						href="https://chat.openai.com" 
+						target="_blank" 
+						rel="noopener noreferrer"
+						class="weather__tool"
+					>
+						<span class="weather__tool-icon">🤖</span>
+						<span class="weather__tool-label">ChatGPT</span>
+					</a>
 				</div>
 			</div>
 		</div>

@@ -3,7 +3,11 @@
  * Wraps chrome.storage.local with fallback to localStorage
  */
 
-const isExtension = typeof chrome !== 'undefined' && chrome.storage;
+// Declare chrome types for extension environment
+declare const chrome: any;
+
+// Type guard for chrome extension environment
+const isExtension = typeof chrome !== 'undefined' && typeof chrome?.storage !== 'undefined';
 
 export interface StorageData {
 	commandHistory: string[];
@@ -16,6 +20,7 @@ export interface StorageData {
 		showWeather: boolean;
 		showTechNews: boolean;
 		showGitHubStats: boolean;
+		showTopSites: boolean;
 		githubUsername: string;
 		displayName: string;
 		customLinks: Array<{ title: string; url: string }>;
@@ -30,9 +35,10 @@ const DEFAULT_DATA: StorageData = {
 		showGreeting: true,
 		showPomodoro: false,
 		showNotepad: false,
-		showWeather: false,
-		showTechNews: false,
-		showGitHubStats: false,
+		showWeather: true,
+		showTechNews: true,
+		showGitHubStats: true,
+		showTopSites: false,
 		githubUsername: '',
 		displayName: '',
 		customLinks: []
@@ -49,8 +55,11 @@ export async function getData<K extends keyof StorageData>(key: K): Promise<Stor
 	}
 
 	try {
-		const result = await chrome.storage.local.get(key);
-		return (result[key] as StorageData[K]) ?? DEFAULT_DATA[key];
+		if (chrome?.storage?.local) {
+			const result = await chrome.storage.local.get(key);
+			return (result[key] as StorageData[K]) ?? DEFAULT_DATA[key];
+		}
+		return DEFAULT_DATA[key];
 	} catch (error) {
 		console.error('Failed to get data:', error);
 		return DEFAULT_DATA[key];
@@ -70,7 +79,9 @@ export async function setData<K extends keyof StorageData>(
 	}
 
 	try {
-		await chrome.storage.local.set({ [key]: value });
+		if (chrome?.storage?.local) {
+			await chrome.storage.local.set({ [key]: value });
+		}
 	} catch (error) {
 		console.error('Failed to set data:', error);
 	}

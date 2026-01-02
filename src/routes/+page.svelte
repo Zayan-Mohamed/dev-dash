@@ -20,6 +20,10 @@
 	let error = $state<string | null>(null);
 	let settingsOpen = $state(false);
 
+	// Derived state: show TechNews only when both Pomodoro and Notepad are not both visible
+	let bothWidgetsVisible = $derived($settings.showPomodoro && $settings.showNotepad);
+	let showTechNews = $derived($settings.showTechNews && !bothWidgetsVisible);
+
 	onMount(async () => {
 		// Initialize settings store
 		await settings.init();
@@ -83,39 +87,47 @@
 			<Omnibar animationDelay={200} />
 
 			<!-- Top Sites Grid -->
-			{#if loading}
-				<div class="loading-state" role="status" aria-live="polite">
-					<div class="loading-spinner"></div>
-					<span class="loading-text">Loading your sites...</span>
-				</div>
-			{:else if error}
-				<div class="error-state" role="alert">
-					<span class="error-icon">⚠️</span>
-					<span class="error-text">{error}</span>
-				</div>
-			{:else}
-				<TopSites {sites} animationDelay={300} />
+			{#if $settings.showTopSites}
+				{#if loading}
+					<div class="loading-state" role="status" aria-live="polite">
+						<div class="loading-spinner"></div>
+						<span class="loading-text">Loading your sites...</span>
+					</div>
+				{:else if error}
+					<div class="error-state" role="alert">
+						<span class="error-icon">⚠️</span>
+						<span class="error-text">{error}</span>
+					</div>
+				{:else}
+					<TopSites {sites} animationDelay={300} />
+				{/if}
 			{/if}
 
-			<!-- Tech News -->
-			{#if $settings.showTechNews}
-				<TechNews animationDelay={400} />
-			{/if}
+			<!-- Content Grid: Tech News and Scratchpad/Pomodoro -->
+			<div class="content-grid" class:both-widgets={bothWidgetsVisible}>
+				<!-- Tech News (hidden when both widgets are visible) -->
+				{#if showTechNews}
+					<div class="tech-news-wrapper">
+						<TechNews animationDelay={400} />
+					</div>
+				{/if}
+
+				<!-- Widget Area: Scratchpad or Pomodoro -->
+				<div class="widget-wrapper">
+					{#if $settings.showNotepad}
+						<Notepad animationDelay={500} />
+					{/if}
+					{#if $settings.showPomodoro}
+						<Pomodoro animationDelay={bothWidgetsVisible ? 600 : 500} />
+					{/if}
+				</div>
+			</div>
 		</div>
 	{/snippet}
 
 	{#snippet rightSidebar()}
 		{#if $settings.showWeather}
 			<Weather animationDelay={100} />
-		{/if}
-	{/snippet}
-
-	{#snippet bottomWidgets()}
-		{#if $settings.showPomodoro}
-			<Pomodoro animationDelay={400} />
-		{/if}
-		{#if $settings.showNotepad}
-			<Notepad animationDelay={500} />
 		{/if}
 	{/snippet}
 </ViewportLayout>
@@ -149,7 +161,10 @@
 	}
 
 	#main-content {
-		display: contents;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-4);
+		width: 100%;
 	}
 
 	#main-content:focus {
@@ -211,6 +226,51 @@
 	@keyframes spin {
 		to {
 			transform: rotate(360deg);
+		}
+	}
+
+	.content-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: var(--space-4);
+	}
+	
+	/* When both widgets are visible, make grid single column with widgets side by side */
+	.content-grid.both-widgets {
+		grid-template-columns: 1fr;
+	}
+	
+	.content-grid.both-widgets .widget-wrapper {
+		grid-column: 1;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: var(--space-4);
+	}
+
+	.tech-news-wrapper {
+		grid-column: 1;
+	}
+
+	/* Default: widget area takes column 2 and shows single widget at full width */
+	.widget-wrapper {
+		grid-column: 2;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-4);
+	}
+
+	@media (max-width: 1024px) {
+		.content-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.tech-news-wrapper,
+		.widget-wrapper {
+			grid-column: 1;
+		}
+		
+		.widget-wrapper {
+			grid-template-columns: 1fr;
 		}
 	}
 
