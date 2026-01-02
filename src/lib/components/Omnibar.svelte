@@ -10,6 +10,14 @@
 	let historyIndex = $state(-1);
 	let showSuggestions = $state(false);
 	let isFocused = $state(false);
+	let inputElement: HTMLInputElement;
+
+	// Expose focus function to parent
+	export function focus() {
+		if (inputElement) {
+			inputElement.focus();
+		}
+	}
 
 	// Load command history on mount
 	$effect(() => {
@@ -174,6 +182,7 @@
 				<Search size={20} />
 			</div>
 			<input
+				bind:this={inputElement}
 				bind:value={input}
 				onkeydown={handleKeyDown}
 				onfocus={handleFocus}
@@ -183,8 +192,11 @@
 				class="omnibar-input"
 				autocomplete="off"
 				spellcheck="false"
+				aria-label="Search or command input"
 			/>
-			<kbd class="omnibar-kbd">Enter</kbd>
+			<div class="omnibar-shortcuts">
+				<kbd class="omnibar-kbd">⌘K</kbd>
+			</div>
 		</div>
 
 		{#if showSuggestions && suggestions().length > 0}
@@ -275,6 +287,13 @@
 
 	.omnibar-input::placeholder {
 		color: var(--color-text-muted);
+	}
+
+	.omnibar-shortcuts {
+		display: flex;
+		align-items: center;
+		gap: var(--space-2);
+		flex-shrink: 0;
 	}
 
 	.omnibar-kbd {

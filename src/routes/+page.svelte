@@ -19,6 +19,7 @@
 	let loading = $state(true);
 	let error = $state<string | null>(null);
 	let settingsOpen = $state(false);
+	let omnibarRef: Omnibar;
 
 	onMount(async () => {
 		// Initialize settings store
@@ -41,12 +42,34 @@
 	}
 
 	function handleKeydown(event: KeyboardEvent) {
+		// Prevent focus if user is typing in another input
+		const target = event.target as HTMLElement;
+		if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+			// Allow global shortcuts with modifiers
+			if (event.ctrlKey || event.metaKey) {
+				if (event.key === ',') {
+					event.preventDefault();
+					toggleSettings();
+				} else if (event.key === 'k') {
+					event.preventDefault();
+					omnibarRef?.focus();
+				}
+			}
+			return;
+		}
+
 		// Global keyboard shortcuts
 		if (event.ctrlKey || event.metaKey) {
 			switch (event.key) {
 				case ',':
 					event.preventDefault();
 					toggleSettings();
+					break;
+				case 'k':
+					event.preventDefault();
+					if (omnibarRef) {
+						omnibarRef.focus();
+					}
 					break;
 			}
 		}
@@ -80,7 +103,7 @@
 			<Clock use24Hour={$settings.use24Hour} showGreeting={$settings.showGreeting} animationDelay={100} />
 
 			<!-- Search Card -->
-			<Omnibar animationDelay={200} />
+			<Omnibar bind:this={omnibarRef} animationDelay={200} />
 
 			<!-- Top Sites Grid -->
 			{#if loading}
