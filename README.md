@@ -1,7 +1,6 @@
 <div align="center">
-  <img src="public/icons/icon-128.png" alt="DevDash Logo" width="120" height="120">
-  
-  # DevDash 🚀
+  <img src="public/Asset 1.png" alt="DevDash Logo">
+
   
   **A Zero-Latency Developer New Tab Extension**
   
