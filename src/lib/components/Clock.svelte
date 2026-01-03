@@ -167,6 +167,12 @@
 	}
 
 	/* Responsive adjustments */
+	@media (max-width: 1024px) {
+		.clock-hero__content {
+			min-height: 240px;
+		}
+	}
+
 	@media (max-width: 768px) {
 		.clock-hero__greeting {
 			font-size: var(--font-size-base);
@@ -181,7 +187,8 @@
 		}
 
 		.clock-hero__content {
-			min-height: 240px;
+			min-height: 220px;
+			padding: var(--space-3) 0;
 		}
 	}
 
@@ -201,13 +208,14 @@
 		.clock-hero__content {
 			min-height: 200px;
 			gap: var(--space-2);
+			padding: var(--space-2) 0;
 		}
 	}
 
 	/* Tablet landscape */
 	@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
 		.clock-hero__content {
-			min-height: 240px;
+			min-height: 220px;
 		}
 
 		.clock-hero__time {
@@ -220,6 +228,7 @@
 		.clock-hero__content {
 			min-height: 200px;
 			gap: var(--space-2);
+			padding: var(--space-2) 0;
 		}
 
 		.clock-hero__greeting {

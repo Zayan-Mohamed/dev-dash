@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { 
-		Cloud, 
-		Sun, 
-		CloudRain, 
-		CloudSnow, 
-		CloudLightning, 
+	import {
+		Cloud,
+		Sun,
+		CloudRain,
+		CloudSnow,
+		CloudLightning,
 		Wind,
 		MapPin,
 		RefreshCw,
@@ -65,31 +65,32 @@
 				try {
 					loading = true;
 					error = null;
-					
+
 					const { latitude, longitude } = position.coords;
-					
+
 					// Fetch weather data
 					const weatherRes = await fetch(
 						`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=relative_humidity_2m`
 					);
 					const weatherData = await weatherRes.json();
-					
+
 					temperature = weatherData.current_weather.temperature;
 					weatherCode = weatherData.current_weather.weathercode;
 					windSpeed = weatherData.current_weather.windspeed;
-					
+
 					// Get humidity from hourly data (first value)
 					if (weatherData.hourly?.relative_humidity_2m?.[0]) {
 						humidity = weatherData.hourly.relative_humidity_2m[0];
 					}
-					
+
 					// Fetch location name using reverse geocoding
 					try {
 						const geoRes = await fetch(
 							`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
 						);
 						const geoData = await geoRes.json();
-						location = geoData.city || geoData.locality || geoData.principalSubdivision || 'Unknown';
+						location =
+							geoData.city || geoData.locality || geoData.principalSubdivision || 'Unknown';
 					} catch {
 						location = 'Unknown location';
 					}
@@ -126,7 +127,7 @@
 	{#if error}
 		<div class="weather__error">
 			<Cloud size={24} class="text-zinc-600" />
-			<p class="text-xs font-mono text-red-400 text-center mt-2">{error}</p>
+			<p class="mt-2 text-center font-mono text-xs text-red-400">{error}</p>
 			<button onclick={handleRefresh} class="weather__refresh-btn mt-3">
 				<RefreshCw size={14} class={refreshing ? 'animate-spin' : ''} />
 				Retry
@@ -160,10 +161,10 @@
 
 <style>
 	:global(.weather-card) {
-		min-height: 300px;
+		min-height: 400px;
 		display: flex;
 		flex-direction: column;
-		flex: 0.4;
+		flex-shrink: 0;
 	}
 
 	.weather-header {

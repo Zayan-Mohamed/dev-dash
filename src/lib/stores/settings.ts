@@ -9,6 +9,7 @@ const DEFAULT_SETTINGS: StorageData['settings'] = {
 	showWeather: true,
 	showGitHubStats: true,
 	showTopSites: false,
+	showTechNews: true,
 	githubUsername: '',
 	displayName: '',
 	customLinks: []

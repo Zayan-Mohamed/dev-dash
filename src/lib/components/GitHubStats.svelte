@@ -40,13 +40,13 @@
 		try {
 			loading = true;
 			error = null;
-			
+
 			// Fetch User Stats if username is set
 			if ($settings.githubUsername) {
 				const userRes = await fetch(`https://api.github.com/users/${$settings.githubUsername}`);
 				if (userRes.ok) {
 					userStats = await userRes.json();
-					
+
 					// Fetch user's repos (limit to 2)
 					const reposRes = await fetch(
 						`https://api.github.com/users/${$settings.githubUsername}/repos?sort=updated&per_page=2`
@@ -97,7 +97,7 @@
 		{#if error}
 			<div class="github-stats__error">
 				<Github size={24} class="text-zinc-600" />
-				<p class="text-xs font-mono text-red-400 text-center mt-2">{error}</p>
+				<p class="mt-2 text-center font-mono text-xs text-red-400">{error}</p>
 				<button onclick={handleRefresh} class="github-stats__refresh-btn mt-3">
 					<RefreshCw size={14} class={refreshing ? 'animate-spin' : ''} />
 					Retry
@@ -131,54 +131,54 @@
 					</div>
 				</div>
 
-			<!-- Recent Repos -->
-			{#if userRepos.length > 0}
-				<div class="github-stats__repos">
-					<h4 class="github-stats__repos-title">Recent Repos</h4>
-					<div class="github-stats__repos-list">
-						{#each userRepos as repo}
-							<a 
-								href={repo.html_url} 
-								target="_blank" 
-								rel="noopener noreferrer"
-								class="github-stats__repo"
-							>
-								<div class="github-stats__repo-header">
-									<span class="github-stats__repo-name">{repo.name}</span>
-									<span class="github-stats__repo-time">{getTimeAgo(repo.updated_at)}</span>
-								</div>
-								{#if repo.description}
-									<p class="github-stats__repo-desc">{repo.description}</p>
-								{/if}
-								<div class="github-stats__repo-footer">
-									{#if repo.language}
-										<span class="github-stats__repo-lang">{repo.language}</span>
-									{/if}
-									<div class="github-stats__repo-stats">
-										<span class="flex items-center gap-1">
-											<Star size={10} />
-											{repo.stargazers_count}
-										</span>
-										<span class="flex items-center gap-1">
-											<GitFork size={10} />
-											{repo.forks_count}
-										</span>
+				<!-- Recent Repos -->
+				{#if userRepos.length > 0}
+					<div class="github-stats__repos">
+						<h4 class="github-stats__repos-title">Recent Repos</h4>
+						<div class="github-stats__repos-list">
+							{#each userRepos as repo}
+								<a
+									href={repo.html_url}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="github-stats__repo"
+								>
+									<div class="github-stats__repo-header">
+										<span class="github-stats__repo-name">{repo.name}</span>
+										<span class="github-stats__repo-time">{getTimeAgo(repo.updated_at)}</span>
 									</div>
-								</div>
-							</a>
-						{/each}
+									{#if repo.description}
+										<p class="github-stats__repo-desc">{repo.description}</p>
+									{/if}
+									<div class="github-stats__repo-footer">
+										{#if repo.language}
+											<span class="github-stats__repo-lang">{repo.language}</span>
+										{/if}
+										<div class="github-stats__repo-stats">
+											<span class="flex items-center gap-1">
+												<Star size={10} />
+												{repo.stargazers_count}
+											</span>
+											<span class="flex items-center gap-1">
+												<GitFork size={10} />
+												{repo.forks_count}
+											</span>
+										</div>
+									</div>
+								</a>
+							{/each}
+						</div>
 					</div>
-				</div>
-			{/if}
-		</div>
-	{:else}
-		<div class="github-stats__empty">
-			<Github size={32} class="text-zinc-600" />
-			<p class="text-xs font-mono text-zinc-500 text-center mt-3">
-				Set your GitHub username in settings
-			</p>
-		</div>
-	{/if}
+				{/if}
+			</div>
+		{:else}
+			<div class="github-stats__empty">
+				<Github size={32} class="text-zinc-600" />
+				<p class="mt-3 text-center font-mono text-xs text-zinc-500">
+					Set your GitHub username in settings
+				</p>
+			</div>
+		{/if}
 	{/snippet}
 </Card>
 

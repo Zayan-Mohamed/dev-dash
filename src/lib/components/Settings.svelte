@@ -19,7 +19,11 @@
 			icon: Layout,
 			settings: [
 				{ key: 'use24Hour', label: '24-Hour Clock', description: 'Use 24-hour time format' },
-				{ key: 'showGreeting', label: 'Show Greeting', description: 'Display personalized greeting' }
+				{
+					key: 'showGreeting',
+					label: 'Show Greeting',
+					description: 'Display personalized greeting'
+				}
 			]
 		},
 		{
@@ -28,17 +32,32 @@
 			settings: [
 				{ key: 'showWeather', label: 'Weather Widget', description: 'Show weather information' },
 				{ key: 'showGitHubStats', label: 'GitHub Stats', description: 'Display GitHub statistics' },
-				{ key: 'showTopSites', label: 'Top Sites', description: 'Display frequently visited sites' },
+				{
+					key: 'showTopSites',
+					label: 'Top Sites',
+					description: 'Display frequently visited sites'
+				},
 				{ key: 'showPomodoro', label: 'Pomodoro Timer', description: 'Enable focus timer' },
-				{ key: 'showNotepad', label: 'Notepad', description: 'Enable quick notes' }
+				{ key: 'showNotepad', label: 'Notepad', description: 'Enable quick notes' },
+				{ key: 'showTechNews', label: 'Tech News', description: 'Show latest tech news' }
 			]
 		},
 		{
 			title: 'Profile',
 			icon: User,
 			inputs: [
-				{ key: 'displayName', label: 'Display Name', placeholder: 'e.g. Linus', description: 'Name shown in greeting' },
-				{ key: 'githubUsername', label: 'GitHub Username', placeholder: 'e.g. torvalds', description: 'Username for GitHub stats' }
+				{
+					key: 'displayName',
+					label: 'Display Name',
+					placeholder: 'e.g. Linus',
+					description: 'Name shown in greeting'
+				},
+				{
+					key: 'githubUsername',
+					label: 'GitHub Username',
+					placeholder: 'e.g. torvalds',
+					description: 'Username for GitHub stats'
+				}
 			]
 		}
 	];
@@ -72,12 +91,7 @@
 					<p class="settings-subtitle">Customize your dashboard</p>
 				</div>
 			</div>
-			<button
-				onclick={close}
-				class="settings-close"
-				aria-label="Close settings"
-				type="button"
-			>
+			<button onclick={close} class="settings-close" aria-label="Close settings" type="button">
 				<X size={20} />
 			</button>
 		</div>
@@ -95,10 +109,7 @@
 					{#if section.settings}
 						<div class="settings-list">
 							{#each section.settings as setting, j}
-								<label
-									class="settings-item"
-									style="--item-delay: {(i * 50) + (j * 30)}ms"
-								>
+								<label class="settings-item" style="--item-delay: {i * 50 + j * 30}ms">
 									<div class="settings-item-content">
 										<span class="settings-item-label">{setting.label}</span>
 										<span class="settings-item-description">{setting.description}</span>
@@ -106,8 +117,9 @@
 									<div class="settings-toggle">
 										<input
 											type="checkbox"
-										checked={$settings[setting.key as keyof typeof $settings] as boolean}
-											onchange={(e) => settings.update(s => ({ ...s, [setting.key]: e.currentTarget.checked }))}
+											checked={$settings[setting.key as keyof typeof $settings] as boolean}
+											onchange={(e) =>
+												settings.update((s) => ({ ...s, [setting.key]: e.currentTarget.checked }))}
 											class="settings-toggle-input"
 										/>
 										<div class="settings-toggle-slider"></div>
@@ -120,10 +132,7 @@
 					{#if section.inputs}
 						<div class="settings-inputs">
 							{#each section.inputs as input, j}
-								<div
-									class="settings-input-item"
-									style="--item-delay: {(i * 50) + (j * 30)}ms"
-								>
+								<div class="settings-input-item" style="--item-delay: {i * 50 + j * 30}ms">
 									<label for={input.key} class="settings-input-label">
 										{input.label}
 									</label>
@@ -132,7 +141,8 @@
 										id={input.key}
 										type="text"
 										value={$settings[input.key as keyof typeof $settings] as string}
-										oninput={(e) => settings.update(s => ({ ...s, [input.key]: e.currentTarget.value }))}
+										oninput={(e) =>
+											settings.update((s) => ({ ...s, [input.key]: e.currentTarget.value }))}
 										placeholder={input.placeholder}
 										class="settings-input-field"
 									/>
@@ -146,9 +156,7 @@
 
 		<!-- Footer -->
 		<div class="settings-footer">
-			<p class="settings-footer-text">
-				Changes are saved automatically
-			</p>
+			<p class="settings-footer-text">Changes are saved automatically</p>
 		</div>
 	</div>
 {/if}
@@ -274,7 +282,8 @@
 
 	.settings-section {
 		margin-bottom: var(--space-8, 2rem);
-		animation: slideIn var(--duration-normal) var(--easing-decelerate) var(--section-delay, 0ms) both;
+		animation: slideIn var(--duration-normal) var(--easing-decelerate) var(--section-delay, 0ms)
+			both;
 	}
 
 	.settings-section-header {

@@ -20,6 +20,7 @@ export interface StorageData {
 		showWeather: boolean;
 		showGitHubStats: boolean;
 		showTopSites: boolean;
+		showTechNews: boolean;
 		githubUsername: string;
 		displayName: string;
 		customLinks: Array<{ title: string; url: string }>;
@@ -37,6 +38,7 @@ const DEFAULT_DATA: StorageData = {
 		showWeather: true,
 		showGitHubStats: true,
 		showTopSites: true,
+		showTechNews: true,
 		githubUsername: '',
 		displayName: '',
 		customLinks: []

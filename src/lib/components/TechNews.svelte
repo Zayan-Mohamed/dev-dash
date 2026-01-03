@@ -22,13 +22,15 @@
 			// Fetch top stories IDs
 			const res = await fetch('https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty');
 			const ids = await res.json();
-			
+
 			// Fetch details for top 5 stories
 			const top5Ids = ids.slice(0, 3);
 			const storyPromises = top5Ids.map((id: number) =>
-				fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json?print=pretty`).then(r => r.json())
+				fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json?print=pretty`).then((r) =>
+					r.json()
+				)
 			);
-			
+
 			stories = await Promise.all(storyPromises);
 		} catch (err) {
 			error = 'Failed to load news';
@@ -38,7 +40,7 @@
 	});
 </script>
 
-<Card variant="small" elevation="low" class="tech-news-card" {animationDelay}>
+<Card variant="medium" elevation="medium" class="tech-news-card" {animationDelay}>
 	<div class="tech-news">
 		<div class="tech-news__header">
 			<Newspaper size={12} class="text-orange-400" />
@@ -77,7 +79,10 @@
 		width: 100%;
 		max-width: 480px;
 		margin: 0 auto;
-		flex: 0.6;
+		min-height: 400px;
+		display: flex;
+		flex-direction: column;
+		flex-shrink: 0;
 	}
 
 	.tech-news {
@@ -119,8 +124,13 @@
 	}
 
 	@keyframes skeleton-loading {
-		0%, 100% { opacity: 0.5; }
-		50% { opacity: 1; }
+		0%,
+		100% {
+			opacity: 0.5;
+		}
+		50% {
+			opacity: 1;
+		}
 	}
 
 	.tech-news__error {
@@ -204,7 +214,7 @@
 		.tech-news__skeleton {
 			animation: none;
 		}
-		
+
 		.tech-news__story {
 			transition: none;
 		}

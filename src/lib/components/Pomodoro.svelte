@@ -24,8 +24,6 @@
 				} else {
 					// Timer finished
 					if (interval) clearInterval(interval);
-					isRunning = false;
-					
 					// Show notification
 					if ('Notification' in window && Notification.permission === 'granted') {
 						new Notification(`${mode === 'work' ? 'Work' : 'Break'} session completed!`, {
@@ -33,7 +31,7 @@
 							icon: '/icons/icon128.png'
 						});
 					}
-					
+
 					// Auto switch mode
 					mode = mode === 'work' ? 'break' : 'work';
 					timeLeft = mode === 'work' ? WORK_TIME : BREAK_TIME;
@@ -66,14 +64,14 @@
 		if ('Notification' in window && Notification.permission === 'default') {
 			Notification.requestPermission();
 		}
-		
+
 		return () => {
 			if (interval) clearInterval(interval);
 		};
 	});
 </script>
 
-<Card variant="medium" elevation="medium" class="pomodoro-card" {animationDelay}>
+<Card variant="hero" elevation="medium" class="pomodoro-card" {animationDelay}>
 	<div class="pomodoro-container">
 		<!-- Card Header -->
 		<div class="pomodoro-header">
@@ -144,7 +142,7 @@
 		align-items: center;
 		justify-content: center;
 		gap: var(--space-3);
-		padding: var(--space-4);
+		padding: var(--space-4) 0;
 		min-height: 280px;
 	}
 
@@ -251,9 +249,18 @@
 	}
 
 	/* Responsive adjustments */
+	@media (max-width: 1024px) {
+		.pomodoro-container {
+			min-height: 240px;
+			padding: var(--space-4) 0;
+		}
+	}
+
 	@media (max-width: 768px) {
 		.pomodoro-container {
 			gap: var(--space-4);
+			min-height: 220px;
+			padding: var(--space-3) 0;
 		}
 
 		.pomodoro-timer {
@@ -268,6 +275,13 @@
 			padding: var(--space-2);
 			min-width: 44px;
 			min-height: 44px;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.pomodoro-container {
+			min-height: 200px;
+			padding: var(--space-2) 0;
 		}
 	}
 

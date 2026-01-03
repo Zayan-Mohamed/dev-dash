@@ -50,7 +50,13 @@
 	}
 </script>
 
-<Card variant="medium" elevation="medium" class="notepad-card {isCollapsed ? '' : 'notepad-card--expanded'}" loading={isLoading} {animationDelay}>
+<Card
+	variant="medium"
+	elevation="medium"
+	class="notepad-card {isCollapsed ? '' : 'notepad-card--expanded'}"
+	loading={isLoading}
+	{animationDelay}
+>
 	<div class="notepad-container">
 		<!-- Card Header -->
 		<div class="notepad-header">
@@ -101,11 +107,17 @@
 </Card>
 
 <style>
+	:global(.notepad-card) {
+		min-height: 400px;
+		display: flex;
+		flex-direction: column;
+		flex-shrink: 0;
+	}
+
 	.notepad-container {
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-4);
-		
 	}
 
 	.notepad-header {

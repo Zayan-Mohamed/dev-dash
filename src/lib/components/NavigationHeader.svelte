@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Settings as SettingsIcon } from 'lucide-svelte';
+	import CompactWeather from './CompactWeather.svelte';
 
 	interface Props {
 		onSettingsToggle: () => void;
@@ -15,15 +16,18 @@
 			<h1 class="nav-header__title">Dev Dash</h1>
 		</div>
 
-		<button
-			onclick={onSettingsToggle}
-			class="nav-header__settings-btn"
-			aria-label="Open settings (Keyboard shortcut: Control comma)"
-			title="Settings (Ctrl+,)"
-			type="button"
-		>
-			<SettingsIcon size={20} aria-hidden="true" />
-		</button>
+		<div class="nav-header__actions">
+			<CompactWeather />
+			<button
+				onclick={onSettingsToggle}
+				class="nav-header__settings-btn"
+				aria-label="Open settings (Keyboard shortcut: Control comma)"
+				title="Settings (Ctrl+,)"
+				type="button"
+			>
+				<SettingsIcon size={20} aria-hidden="true" />
+			</button>
+		</div>
 	</div>
 </nav>
 
@@ -58,6 +62,12 @@
 		font-weight: var(--font-weight-semibold);
 		color: var(--color-text-primary);
 		letter-spacing: var(--letter-spacing-tight);
+	}
+
+	.nav-header__actions {
+		display: flex;
+		align-items: center;
+		gap: var(--space-2);
 	}
 
 	.nav-header__settings-btn {
