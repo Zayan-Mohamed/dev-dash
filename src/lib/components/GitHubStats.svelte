@@ -78,8 +78,11 @@
 		}
 	}
 
-	onMount(() => {
-		fetchGitHubData();
+	// Fetch data when username changes
+	$effect(() => {
+		if ($settings.githubUsername) {
+			fetchGitHubData();
+		}
 	});
 
 	async function handleRefresh() {
