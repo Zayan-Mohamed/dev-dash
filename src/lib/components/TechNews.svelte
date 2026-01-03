@@ -79,7 +79,7 @@
 		width: 100%;
 		max-width: 480px;
 		margin: 0 auto;
-		min-height: 400px;
+		min-height: 304px;
 		display: flex;
 		flex-direction: column;
 		flex-shrink: 0;

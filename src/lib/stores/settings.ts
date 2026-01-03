@@ -11,6 +11,7 @@ const DEFAULT_SETTINGS: StorageData['settings'] = {
 	showTopSites: false,
 	showTechNews: true,
 	githubUsername: '',
+	githubToken: '',
 	displayName: '',
 	customLinks: []
 };

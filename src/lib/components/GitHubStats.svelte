@@ -43,13 +43,23 @@
 
 			// Fetch User Stats if username is set
 			if ($settings.githubUsername) {
-				const userRes = await fetch(`https://api.github.com/users/${$settings.githubUsername}`);
+				console.log('Fetching GitHub data for:', $settings.githubUsername);
+				
+				// Prepare headers with token if available
+				const headers: HeadersInit = $settings.githubToken
+					? { Authorization: `Bearer ${$settings.githubToken}` }
+					: {};
+				
+				const userRes = await fetch(`https://api.github.com/users/${$settings.githubUsername}`, { headers });
+				console.log('User fetch response status:', userRes.status);
+				
 				if (userRes.ok) {
 					userStats = await userRes.json();
 
 					// Fetch ALL user's repos to calculate accurate totals
 					const allReposRes = await fetch(
-						`https://api.github.com/users/${$settings.githubUsername}/repos?per_page=100`
+						`https://api.github.com/users/${$settings.githubUsername}/repos?per_page=100`,
+						{ headers }
 					);
 					if (allReposRes.ok) {
 						const allRepos = await allReposRes.json();
@@ -58,15 +68,29 @@
 						totalForks = allRepos.reduce((sum: number, repo: Repo) => sum + repo.forks_count, 0);
 					}
 
-					// Fetch recent repos (limit to 2 for display)
+					// Fetch recent repos (limit to 5 for display)
 					const recentReposRes = await fetch(
-						`https://api.github.com/users/${$settings.githubUsername}/repos?sort=updated&per_page=5`
+						`https://api.github.com/users/${$settings.githubUsername}/repos?sort=updated&per_page=5`,
+						{ headers }
 					);
 					if (recentReposRes.ok) {
 						userRepos = await recentReposRes.json();
 					}
 				} else {
-					error = 'User not found';
+					const errorData = await userRes.json().catch(() => ({}));
+					console.error('GitHub API error:', userRes.status, errorData);
+					
+					if (userRes.status === 404) {
+						error = `User "${$settings.githubUsername}" not found`;
+					} else if (userRes.status === 403) {
+						if ($settings.githubToken) {
+							error = 'Rate limit exceeded. Token may be invalid.';
+						} else {
+							error = 'Rate limit exceeded. Add a GitHub token in settings.';
+						}
+					} else {
+						error = `Error ${userRes.status}: ${errorData.message || 'Failed to fetch user'}`;
+					}
 				}
 			}
 		} catch (err) {
@@ -143,6 +167,10 @@
 					<div class="stat-item">
 						<span class="stat-value">{totalStars}</span>
 						<span class="stat-label">STARS</span>
+					</div>
+					<div class="stat-item">
+						<span class="stat-value">{totalForks}</span>
+						<span class="stat-label">FORKS</span>
 					</div>
 					<div class="stat-item">
 						<span class="stat-value">{userStats.followers}</span>
@@ -259,8 +287,8 @@
 
 	.repos-stats-row {
 		display: grid;
-		grid-template-columns: repeat(4, 1fr);
-		gap: var(--space-3);
+		grid-template-columns: repeat(5, 1fr);
+		gap: var(--space-2);
 		padding: var(--space-2) 0;
 	}
 

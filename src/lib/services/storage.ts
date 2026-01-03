@@ -4,7 +4,16 @@
  */
 
 // Declare chrome types for extension environment
-declare const chrome: any;
+interface ChromeStorage {
+	storage: {
+		local: {
+			get: (keys: string | string[] | null) => Promise<Record<string, unknown>>;
+			set: (items: Record<string, unknown>) => Promise<void>;
+		};
+	};
+}
+
+declare const chrome: ChromeStorage;
 
 // Type guard for chrome extension environment
 const isExtension = typeof chrome !== 'undefined' && typeof chrome?.storage !== 'undefined';
@@ -22,6 +31,7 @@ export interface StorageData {
 		showTopSites: boolean;
 		showTechNews: boolean;
 		githubUsername: string;
+		githubToken: string;
 		displayName: string;
 		customLinks: Array<{ title: string; url: string }>;
 	};
@@ -40,6 +50,7 @@ const DEFAULT_DATA: StorageData = {
 		showTopSites: true,
 		showTechNews: true,
 		githubUsername: '',
+		githubToken: '',
 		displayName: '',
 		customLinks: []
 	}

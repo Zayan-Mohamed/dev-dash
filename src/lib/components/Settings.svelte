@@ -57,6 +57,13 @@
 					label: 'GitHub Username',
 					placeholder: 'e.g. torvalds',
 					description: 'Username for GitHub stats'
+				},
+				{
+					key: 'githubToken',
+					label: 'GitHub Token (Optional)',
+					placeholder: 'github_pat_xxxxxxxxxxxx',
+					description: 'Avoids rate limits (5k/hr vs 60/hr)',
+					type: 'password'
 				}
 			]
 		}
@@ -139,7 +146,7 @@
 									<span class="settings-input-description">{input.description}</span>
 									<input
 										id={input.key}
-										type="text"
+										type={input.type || 'text'}
 										value={$settings[input.key as keyof typeof $settings] as string}
 										oninput={(e) =>
 											settings.update((s) => ({ ...s, [input.key]: e.currentTarget.value }))}
