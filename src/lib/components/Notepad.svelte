@@ -108,7 +108,7 @@
 
 <style>
 	:global(.notepad-card) {
-		min-height: 400px;
+		min-height: 304px;
 		display: flex;
 		flex-direction: column;
 		flex-shrink: 0;
@@ -203,7 +203,7 @@
 	.notepad-textarea {
 		width: 100%;
 		height: 100%;
-		min-height: 160px;
+		min-height: 120px;
 		background: transparent;
 		resize: none;
 		outline: none;
