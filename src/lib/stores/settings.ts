@@ -7,7 +7,6 @@ const DEFAULT_SETTINGS: StorageData['settings'] = {
 	showPomodoro: false,
 	showNotepad: false,
 	showWeather: true,
-	showTechNews: true,
 	showGitHubStats: true,
 	showTopSites: false,
 	githubUsername: '',

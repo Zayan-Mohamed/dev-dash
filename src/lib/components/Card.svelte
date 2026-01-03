@@ -66,7 +66,7 @@
 
 	.card--hero {
 		padding: var(--space-4);
-		min-height: 160px;
+		min-height: 280px;
 		background: linear-gradient(135deg, var(--color-surface-2) 0%, var(--color-surface-1) 100%);
 	}
 
@@ -89,7 +89,7 @@
 
 		.card--hero {
 			padding: var(--space-3);
-			min-height: 140px;
+			min-height: 240px;
 		}
 	}
 

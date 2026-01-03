@@ -47,9 +47,9 @@
 				if (userRes.ok) {
 					userStats = await userRes.json();
 					
-					// Fetch user's repos
+					// Fetch user's repos (limit to 2)
 					const reposRes = await fetch(
-						`https://api.github.com/users/${$settings.githubUsername}/repos?sort=updated&per_page=5`
+						`https://api.github.com/users/${$settings.githubUsername}/repos?sort=updated&per_page=2`
 					);
 					if (reposRes.ok) {
 						userRepos = await reposRes.json();
@@ -92,80 +92,44 @@
 	}
 </script>
 
-<Card variant="medium" elevation="medium" {loading} {animationDelay}>
-	{#if error}
-		<div class="github-stats__error">
-			<Github size={24} class="text-zinc-600" />
-			<p class="text-xs font-mono text-red-400 text-center mt-2">{error}</p>
-			<button onclick={handleRefresh} class="github-stats__refresh-btn mt-3">
-				<RefreshCw size={14} class={refreshing ? 'animate-spin' : ''} />
-				Retry
-			</button>
-		</div>
-	{:else if $settings.githubUsername && userStats}
-		<div class="github-stats">
-			<!-- Header with refresh button -->
-			<div class="github-stats__header">
-				<div class="flex items-center gap-2">
-					<Github size={16} class="text-zinc-400" />
-					<h3 class="text-sm font-semibold text-zinc-200">GitHub</h3>
-				</div>
-				<button 
-					onclick={handleRefresh} 
-					class="github-stats__icon-btn"
-					disabled={refreshing}
-					aria-label="Refresh GitHub stats"
-				>
+<Card variant="medium" elevation="medium" {loading} {animationDelay} class="github-stats-card">
+	{#snippet children()}
+		{#if error}
+			<div class="github-stats__error">
+				<Github size={24} class="text-zinc-600" />
+				<p class="text-xs font-mono text-red-400 text-center mt-2">{error}</p>
+				<button onclick={handleRefresh} class="github-stats__refresh-btn mt-3">
 					<RefreshCw size={14} class={refreshing ? 'animate-spin' : ''} />
+					Retry
 				</button>
 			</div>
+		{:else if $settings.githubUsername && userStats}
+			<div class="github-stats">
+				<!-- Repos Header -->
+				<div class="repos-header">
+					<Github size={20} class="text-orange-500" />
+					<h3 class="repos-title">Repos</h3>
+				</div>
 
-			<!-- User Profile -->
-			<div class="github-stats__profile">
-				<a href={`https://github.com/${userStats.login}`} target="_blank" rel="noopener noreferrer">
-					<img 
-						src={userStats.avatar_url} 
-						alt={userStats.login} 
-						class="github-stats__avatar" 
-					/>
-				</a>
-				<div class="github-stats__user-info">
-					<a 
-						href={`https://github.com/${userStats.login}`} 
-						target="_blank" 
-						rel="noopener noreferrer" 
-						class="github-stats__username"
-					>
-						{userStats.login}
-					</a>
-					{#if userStats.bio}
-						<p class="github-stats__bio">{userStats.bio}</p>
-					{/if}
+				<!-- Stats Labels -->
+				<div class="repos-stats-row">
+					<div class="stat-item">
+						<span class="stat-value">{userStats.public_repos}</span>
+						<span class="stat-label">REPOS</span>
+					</div>
+					<div class="stat-item">
+						<span class="stat-value">{totalStars}</span>
+						<span class="stat-label">STARS</span>
+					</div>
+					<div class="stat-item">
+						<span class="stat-value">{userStats.followers}</span>
+						<span class="stat-label">FOLLOWERS</span>
+					</div>
+					<div class="stat-item">
+						<span class="stat-value">{userStats.following}</span>
+						<span class="stat-label">FOLLOWING</span>
+					</div>
 				</div>
-			</div>
-
-			<!-- Stats Grid -->
-			<div class="github-stats__grid">
-				<div class="github-stats__stat">
-					<BookOpen size={14} class="text-blue-400" />
-					<span class="github-stats__stat-value">{userStats.public_repos}</span>
-					<span class="github-stats__stat-label">Repos</span>
-				</div>
-				<div class="github-stats__stat">
-					<Star size={14} class="text-yellow-400" />
-					<span class="github-stats__stat-value">{totalStars}</span>
-					<span class="github-stats__stat-label">Stars</span>
-				</div>
-				<div class="github-stats__stat">
-					<span class="github-stats__stat-value">{userStats.followers}</span>
-					<span class="github-stats__stat-label">Followers</span>
-				</div>
-				<div class="github-stats__stat">
-					<GitFork size={14} class="text-green-400" />
-					<span class="github-stats__stat-value">{totalForks}</span>
-					<span class="github-stats__stat-label">Forks</span>
-				</div>
-			</div>
 
 			<!-- Recent Repos -->
 			{#if userRepos.length > 0}
@@ -215,145 +179,70 @@
 			</p>
 		</div>
 	{/if}
+	{/snippet}
 </Card>
 
 <style>
-	.github-stats {
+	:global(.github-stats-card) {
+		min-height: 400px;
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-4);
-		height: 100%;
-		overflow-y: auto;
-		overflow-x: hidden;
+		flex-shrink: 0;
 	}
 
-	/* Hide scrollbar but keep functionality */
-	.github-stats::-webkit-scrollbar {
-		width: 0;
-		height: 0;
-	}
-
-	.github-stats {
-		scrollbar-width: none; /* Firefox */
-		-ms-overflow-style: none; /* IE and Edge */
-	}
-
-	.github-stats__header {
+	.repos-header {
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
-		padding-bottom: var(--space-3);
-		border-bottom: 1px solid var(--color-border);
-	}
-
-	.github-stats__icon-btn {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		padding: var(--space-2);
-		background: transparent;
-		border: none;
-		border-radius: var(--radius-md);
-		color: var(--color-text-secondary);
-		cursor: pointer;
-		transition: all var(--duration-fast) var(--easing-standard);
-		/* Touch-friendly minimum size */
-		min-width: 44px;
-		min-height: 44px;
-	}
-
-	.github-stats__icon-btn:hover:not(:disabled) {
-		background: var(--color-surface-2);
-		color: var(--color-text-primary);
-	}
-
-	.github-stats__icon-btn:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
-	}
-
-	.github-stats__profile {
-		display: flex;
-		gap: var(--space-3);
-		align-items: flex-start;
-	}
-
-	.github-stats__avatar {
-		width: 48px;
-		height: 48px;
-		border-radius: var(--radius-full);
-		border: 2px solid var(--color-border);
-		transition: border-color var(--duration-fast) var(--easing-standard);
-	}
-
-	.github-stats__avatar:hover {
-		border-color: var(--color-accent);
-	}
-
-	.github-stats__user-info {
-		flex: 1;
-		min-width: 0;
-	}
-
-	.github-stats__username {
-		display: block;
-		font-size: var(--font-size-sm);
-		font-weight: 600;
-		color: var(--color-text-primary);
-		text-decoration: none;
-		transition: color var(--duration-fast) var(--easing-standard);
-	}
-
-	.github-stats__username:hover {
-		color: var(--color-accent);
-	}
-
-	.github-stats__bio {
-		margin-top: var(--space-1);
-		font-size: var(--font-size-xs);
-		color: var(--color-text-secondary);
-		line-height: 1.4;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		display: -webkit-box;
-		-webkit-line-clamp: 2;
-		line-clamp: 2;
-		-webkit-box-orient: vertical;
-	}
-
-	.github-stats__grid {
-		display: grid;
-		grid-template-columns: repeat(2, 1fr);
 		gap: var(--space-2);
+		padding-bottom: var(--space-2);
+		border-bottom: 1px solid var(--color-border);
+		width: fit-content;
 	}
 
-	.github-stats__stat {
+	.repos-title {
+		font-size: var(--font-size-base);
+		font-weight: var(--font-weight-semibold);
+		color: var(--color-text-primary);
+	}
+
+	.repos-stats-row {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: var(--space-3);
+		padding: var(--space-2) 0;
+	}
+
+	.stat-item {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		gap: var(--space-1);
-		padding: var(--space-3);
-		background: var(--color-surface-2);
-		border-radius: var(--radius-md);
-		transition: background var(--duration-fast) var(--easing-standard);
+		text-align: center;
 	}
 
-	.github-stats__stat:hover {
-		background: var(--color-surface-3);
-	}
-
-	.github-stats__stat-value {
+	.stat-value {
 		font-size: var(--font-size-lg);
-		font-weight: 700;
+		font-weight: var(--font-weight-semibold);
 		color: var(--color-text-primary);
-		font-family: 'Courier New', monospace;
 	}
 
-	.github-stats__stat-label {
-		font-size: var(--font-size-xs);
-		color: var(--color-text-muted);
+	.stat-label {
+		font-size: 0.65rem;
+		font-weight: var(--font-weight-medium);
+		color: var(--color-text-secondary);
 		text-transform: uppercase;
-		letter-spacing: 0.05em;
+		letter-spacing: 0.03em;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.github-stats {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-4);
+		flex: 1;
+		min-height: 0;
 	}
 
 	.github-stats__repos {
@@ -499,19 +388,6 @@
 
 	/* Responsive adjustments */
 	@media (max-width: 768px) {
-		.github-stats__grid {
-			grid-template-columns: repeat(2, 1fr);
-			gap: var(--space-2);
-		}
-
-		.github-stats__stat {
-			padding: var(--space-2);
-		}
-
-		.github-stats__stat-value {
-			font-size: var(--font-size-base);
-		}
-
 		.github-stats__repo {
 			padding: var(--space-2);
 			min-height: 64px;
@@ -525,10 +401,6 @@
 
 	/* Touch-friendly interactions on mobile */
 	@media (max-width: 768px) and (hover: none) {
-		.github-stats__icon-btn {
-			-webkit-tap-highlight-color: rgba(88, 166, 255, 0.2);
-		}
-
 		.github-stats__repo {
 			-webkit-tap-highlight-color: rgba(88, 166, 255, 0.2);
 		}

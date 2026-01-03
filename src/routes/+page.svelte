@@ -2,15 +2,14 @@
 	import { onMount } from 'svelte';
 	import ViewportLayout from '$lib/components/ViewportLayout.svelte';
 	import NavigationHeader from '$lib/components/NavigationHeader.svelte';
-	import Clock from '$lib/components/Clock.svelte';
+	import FlippableClock from '$lib/components/FlippableClock.svelte';
 	import TopSites from '$lib/components/TopSites.svelte';
 	import Omnibar from '$lib/components/Omnibar.svelte';
 	import Settings from '$lib/components/Settings.svelte';
-	import Pomodoro from '$lib/components/Pomodoro.svelte';
 	import Notepad from '$lib/components/Notepad.svelte';
 	import Weather from '$lib/components/Weather.svelte';
-	import GitHubStats from '$lib/components/GitHubStats.svelte';
 	import TechNews from '$lib/components/TechNews.svelte';
+	import GitHubStats from '$lib/components/GitHubStats.svelte';
 	import { getTopSites } from '$lib/services/topSites';
 	import type { Site } from '$lib/services/topSites';
 	import { settings } from '$lib/stores/settings';
@@ -19,10 +18,6 @@
 	let loading = $state(true);
 	let error = $state<string | null>(null);
 	let settingsOpen = $state(false);
-
-	// Derived state: show TechNews only when both Pomodoro and Notepad are not both visible
-	let bothWidgetsVisible = $derived($settings.showPomodoro && $settings.showNotepad);
-	let showTechNews = $derived($settings.showTechNews && !bothWidgetsVisible);
 
 	onMount(async () => {
 		// Initialize settings store
@@ -76,12 +71,19 @@
 		{#if $settings.showGitHubStats}
 			<GitHubStats animationDelay={0} />
 		{/if}
+		{#if $settings.showNotepad}
+			<Notepad animationDelay={100} />
+		{/if}
 	{/snippet}
 
 	{#snippet centerContent()}
-		<div id="main-content" tabindex="-1">
-			<!-- Hero Clock Card -->
-			<Clock use24Hour={$settings.use24Hour} showGreeting={$settings.showGreeting} animationDelay={100} />
+		<div id="main-content">
+			<!-- Flippable Clock/Pomodoro Card -->
+			<FlippableClock 
+				use24Hour={$settings.use24Hour} 
+				showGreeting={$settings.showGreeting} 
+				animationDelay={100} 
+			/>
 
 			<!-- Search Card -->
 			<Omnibar animationDelay={200} />
@@ -102,26 +104,6 @@
 					<TopSites {sites} animationDelay={300} />
 				{/if}
 			{/if}
-
-			<!-- Content Grid: Tech News and Scratchpad/Pomodoro -->
-			<div class="content-grid" class:both-widgets={bothWidgetsVisible}>
-				<!-- Tech News (hidden when both widgets are visible) -->
-				{#if showTechNews}
-					<div class="tech-news-wrapper">
-						<TechNews animationDelay={400} />
-					</div>
-				{/if}
-
-				<!-- Widget Area: Scratchpad or Pomodoro -->
-				<div class="widget-wrapper">
-					{#if $settings.showNotepad}
-						<Notepad animationDelay={500} />
-					{/if}
-					{#if $settings.showPomodoro}
-						<Pomodoro animationDelay={bothWidgetsVisible ? 600 : 500} />
-					{/if}
-				</div>
-			</div>
 		</div>
 	{/snippet}
 
@@ -129,6 +111,7 @@
 		{#if $settings.showWeather}
 			<Weather animationDelay={100} />
 		{/if}
+		<TechNews animationDelay={200} />
 	{/snippet}
 </ViewportLayout>
 
@@ -163,7 +146,7 @@
 	#main-content {
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-4);
+		gap: var(--space-2);
 		width: 100%;
 	}
 
@@ -226,51 +209,6 @@
 	@keyframes spin {
 		to {
 			transform: rotate(360deg);
-		}
-	}
-
-	.content-grid {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: var(--space-4);
-	}
-	
-	/* When both widgets are visible, make grid single column with widgets side by side */
-	.content-grid.both-widgets {
-		grid-template-columns: 1fr;
-	}
-	
-	.content-grid.both-widgets .widget-wrapper {
-		grid-column: 1;
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: var(--space-4);
-	}
-
-	.tech-news-wrapper {
-		grid-column: 1;
-	}
-
-	/* Default: widget area takes column 2 and shows single widget at full width */
-	.widget-wrapper {
-		grid-column: 2;
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-4);
-	}
-
-	@media (max-width: 1024px) {
-		.content-grid {
-			grid-template-columns: 1fr;
-		}
-
-		.tech-news-wrapper,
-		.widget-wrapper {
-			grid-column: 1;
-		}
-		
-		.widget-wrapper {
-			grid-template-columns: 1fr;
 		}
 	}
 

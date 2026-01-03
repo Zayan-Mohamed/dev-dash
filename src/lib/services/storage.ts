@@ -18,7 +18,6 @@ export interface StorageData {
 		showPomodoro: boolean;
 		showNotepad: boolean;
 		showWeather: boolean;
-		showTechNews: boolean;
 		showGitHubStats: boolean;
 		showTopSites: boolean;
 		githubUsername: string;
@@ -36,9 +35,8 @@ const DEFAULT_DATA: StorageData = {
 		showPomodoro: false,
 		showNotepad: false,
 		showWeather: true,
-		showTechNews: true,
 		showGitHubStats: true,
-		showTopSites: false,
+		showTopSites: true,
 		githubUsername: '',
 		displayName: '',
 		customLinks: []

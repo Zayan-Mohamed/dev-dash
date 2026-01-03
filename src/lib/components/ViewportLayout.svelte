@@ -75,7 +75,6 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--gap-md);
-		overflow-y: auto;
 		overflow-x: hidden;
 		height: 100%;
 	}
@@ -89,7 +88,6 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--gap-sm);
-		overflow-y: auto;
 		overflow-x: hidden;
 		height: 100%;
 	}

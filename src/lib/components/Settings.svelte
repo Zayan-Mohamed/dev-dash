@@ -28,7 +28,6 @@
 			settings: [
 				{ key: 'showWeather', label: 'Weather Widget', description: 'Show weather information' },
 				{ key: 'showGitHubStats', label: 'GitHub Stats', description: 'Display GitHub statistics' },
-				{ key: 'showTechNews', label: 'Tech News', description: 'Show technology news feed' },
 				{ key: 'showTopSites', label: 'Top Sites', description: 'Display frequently visited sites' },
 				{ key: 'showPomodoro', label: 'Pomodoro Timer', description: 'Enable focus timer' },
 				{ key: 'showNotepad', label: 'Notepad', description: 'Enable quick notes' }
