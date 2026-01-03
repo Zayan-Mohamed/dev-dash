@@ -29,21 +29,23 @@
 	// Filtered suggestions based on input
 	const suggestions = $derived(() => {
 		if (!input.trim() || !showSuggestions) return [];
-		
+
 		const commands = [
 			{ prefix: 'g', description: 'Google search', example: 'g svelte tutorial' },
 			{ prefix: 'gh', description: 'GitHub search', example: 'gh svelte' },
 			{ prefix: 'l', description: 'Localhost', example: 'l 3000' },
 			{ prefix: 'yt', description: 'YouTube search', example: 'yt coding music' },
 			{ prefix: 'tw', description: 'Twitter search', example: 'tw javascript' },
-			{ prefix: 'r', description: 'Reddit search', example: 'r programming' },
+			{ prefix: 'r', description: 'Reddit search', example: 'r programming' }
 		];
 
 		const inputLower = input.toLowerCase();
-		return commands.filter(cmd => 
-			cmd.prefix.startsWith(inputLower) || 
-			cmd.description.toLowerCase().includes(inputLower)
-		).slice(0, 5);
+		return commands
+			.filter(
+				(cmd) =>
+					cmd.prefix.startsWith(inputLower) || cmd.description.toLowerCase().includes(inputLower)
+			)
+			.slice(0, 5);
 	});
 
 	function handleKeyDown(event: KeyboardEvent) {
@@ -214,8 +216,8 @@
 							<Terminal size={14} />
 						</div>
 						<div class="omnibar-suggestion-content"></div>
-							<span class="omnibar-suggestion-prefix">{suggestion.prefix}</span>
-							<span class="omnibar-suggestion-description">{suggestion.description}</span>
+						<span class="omnibar-suggestion-prefix">{suggestion.prefix}</span>
+						<span class="omnibar-suggestion-description">{suggestion.description}</span>
 						<span class="omnibar-suggestion-example">{suggestion.example}</span>
 					</button>
 				{/each}
@@ -252,7 +254,7 @@
 	.omnibar-form--focused .omnibar-input-wrapper {
 		border-color: var(--color-accent);
 		background: var(--color-surface-1);
-		box-shadow: 
+		box-shadow:
 			0 0 0 3px rgba(88, 166, 255, 0.1),
 			0 8px 16px rgba(0, 0, 0, 0.3);
 	}

@@ -6,7 +6,7 @@
 	let { animationDelay = 0 }: { animationDelay?: number } = $props();
 
 	let content = $state('');
-	let isCollapsed = $state(false);
+	let isCollapsed = $state(true);
 	let isSaving = $state(false);
 	let saveError = $state<string | null>(null);
 	let isLoading = $state(true);
@@ -50,13 +50,19 @@
 	}
 </script>
 
-<Card variant="medium" elevation="medium" class="notepad-card" loading={isLoading} {animationDelay}>
+<Card
+	variant="medium"
+	elevation="medium"
+	class="notepad-card {isCollapsed ? '' : 'notepad-card--expanded'}"
+	loading={isLoading}
+	{animationDelay}
+>
 	<div class="notepad-container">
 		<!-- Card Header -->
 		<div class="notepad-header">
-			<div class="notepad-header__title">
-				<StickyNote size={16} class="text-zinc-400" />
-				<span>Scratchpad</span>
+			<div class="notepad-header__main">
+				<StickyNote size={20} class="text-orange-500" />
+				<h3 class="notepad-title">Scratchpad</h3>
 			</div>
 			<div class="notepad-header__actions">
 				{#if isSaving}
@@ -101,11 +107,17 @@
 </Card>
 
 <style>
+	:global(.notepad-card) {
+		min-height: 400px;
+		display: flex;
+		flex-direction: column;
+		flex-shrink: 0;
+	}
+
 	.notepad-container {
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-4);
-		height: 100%;
 	}
 
 	.notepad-header {
@@ -113,17 +125,23 @@
 		justify-content: space-between;
 		align-items: center;
 		width: 100%;
+		padding-bottom: var(--space-2);
+		border-bottom: 1px solid var(--color-border);
+		margin-bottom: var(--space-3);
 	}
 
-	.notepad-header__title {
+	.notepad-header__main {
 		display: flex;
 		align-items: center;
 		gap: var(--space-2);
-		font-size: var(--font-size-sm);
-		font-family: var(--font-mono);
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		color: var(--color-text-secondary);
+	}
+
+	.notepad-title {
+		font-size: var(--font-size-base);
+		font-weight: var(--font-weight-semibold);
+		color: var(--color-text-primary);
+		font-family: 'Courier New', monospace;
+		margin: 0;
 	}
 
 	.notepad-header__actions {
@@ -185,7 +203,7 @@
 	.notepad-textarea {
 		width: 100%;
 		height: 100%;
-		min-height: 200px;
+		min-height: 160px;
 		background: transparent;
 		resize: none;
 		outline: none;
@@ -208,7 +226,7 @@
 	/* Responsive adjustments */
 	@media (max-width: 768px) {
 		.notepad-textarea {
-			min-height: 150px;
+			min-height: 100px;
 			font-size: var(--font-size-xs);
 			/* Prevent zoom on iOS */
 			font-size: 16px;

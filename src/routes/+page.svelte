@@ -2,15 +2,14 @@
 	import { onMount } from 'svelte';
 	import ViewportLayout from '$lib/components/ViewportLayout.svelte';
 	import NavigationHeader from '$lib/components/NavigationHeader.svelte';
-	import Clock from '$lib/components/Clock.svelte';
+	import FlippableClock from '$lib/components/FlippableClock.svelte';
 	import TopSites from '$lib/components/TopSites.svelte';
 	import Omnibar from '$lib/components/Omnibar.svelte';
 	import Settings from '$lib/components/Settings.svelte';
-	import Pomodoro from '$lib/components/Pomodoro.svelte';
 	import Notepad from '$lib/components/Notepad.svelte';
 	import Weather from '$lib/components/Weather.svelte';
-	import GitHubStats from '$lib/components/GitHubStats.svelte';
 	import TechNews from '$lib/components/TechNews.svelte';
+	import GitHubStats from '$lib/components/GitHubStats.svelte';
 	import { getTopSites } from '$lib/services/topSites';
 	import type { Site } from '$lib/services/topSites';
 	import { settings } from '$lib/stores/settings';
@@ -20,11 +19,12 @@
 	let error = $state<string | null>(null);
 	let settingsOpen = $state(false);
 	let omnibarRef: Omnibar;
+	let screenWidth = $state(0);
 
 	onMount(async () => {
 		// Initialize settings store
 		await settings.init();
-		
+
 		// Load top sites
 		try {
 			const data = await getTopSites();
@@ -35,6 +35,21 @@
 		} finally {
 			loading = false;
 		}
+	});
+
+	$effect(() => {
+		// Set initial screen width
+		screenWidth = window.innerWidth;
+
+		// Listen for resize
+		const handleResize = () => {
+			screenWidth = window.innerWidth;
+		};
+		window.addEventListener('resize', handleResize);
+
+		return () => {
+			window.removeEventListener('resize', handleResize);
+		};
 	});
 
 	function toggleSettings() {
@@ -73,7 +88,7 @@
 					break;
 			}
 		}
-		
+
 		// Escape key to close settings
 		if (event.key === 'Escape' && settingsOpen) {
 			settingsOpen = false;
@@ -95,34 +110,41 @@
 		{#if $settings.showGitHubStats}
 			<GitHubStats animationDelay={0} />
 		{/if}
+		{#if $settings.showNotepad}
+			<Notepad animationDelay={100} />
+		{/if}
+		{#if screenWidth <= 1024 && $settings.showTechNews}
+			<TechNews animationDelay={200} />
+		{/if}
 	{/snippet}
 
 	{#snippet centerContent()}
-		<div id="main-content" tabindex="-1">
-			<!-- Hero Clock Card -->
-			<Clock use24Hour={$settings.use24Hour} showGreeting={$settings.showGreeting} animationDelay={100} />
+		<div id="main-content">
+			<!-- Flippable Clock/Pomodoro Card -->
+			<FlippableClock
+				use24Hour={$settings.use24Hour}
+				showGreeting={$settings.showGreeting}
+				animationDelay={100}
+			/>
 
 			<!-- Search Card -->
 			<Omnibar bind:this={omnibarRef} animationDelay={200} />
 
 			<!-- Top Sites Grid -->
-			{#if loading}
-				<div class="loading-state" role="status" aria-live="polite">
-					<div class="loading-spinner"></div>
-					<span class="loading-text">Loading your sites...</span>
-				</div>
-			{:else if error}
-				<div class="error-state" role="alert">
-					<span class="error-icon">⚠️</span>
-					<span class="error-text">{error}</span>
-				</div>
-			{:else}
-				<TopSites {sites} animationDelay={300} />
-			{/if}
-
-			<!-- Tech News -->
-			{#if $settings.showTechNews}
-				<TechNews animationDelay={400} />
+			{#if $settings.showTopSites}
+				{#if loading}
+					<div class="loading-state" role="status" aria-live="polite">
+						<div class="loading-spinner"></div>
+						<span class="loading-text">Loading your sites...</span>
+					</div>
+				{:else if error}
+					<div class="error-state" role="alert">
+						<span class="error-icon">⚠️</span>
+						<span class="error-text">{error}</span>
+					</div>
+				{:else}
+					<TopSites {sites} animationDelay={300} />
+				{/if}
 			{/if}
 		</div>
 	{/snippet}
@@ -131,14 +153,8 @@
 		{#if $settings.showWeather}
 			<Weather animationDelay={100} />
 		{/if}
-	{/snippet}
-
-	{#snippet bottomWidgets()}
-		{#if $settings.showPomodoro}
-			<Pomodoro animationDelay={400} />
-		{/if}
-		{#if $settings.showNotepad}
-			<Notepad animationDelay={500} />
+		{#if screenWidth > 1024 && $settings.showTechNews}
+			<TechNews animationDelay={200} />
 		{/if}
 	{/snippet}
 </ViewportLayout>
@@ -172,7 +188,10 @@
 	}
 
 	#main-content {
-		display: contents;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-5);
+		width: 100%;
 	}
 
 	#main-content:focus {
@@ -237,12 +256,32 @@
 		}
 	}
 
+	/* Responsive adjustments */
+	@media (max-width: 1024px) {
+		#main-content {
+			gap: var(--space-4);
+		}
+	}
+
+	@media (max-width: 768px) {
+		#main-content {
+			gap: var(--space-4);
+			max-width: 100%;
+		}
+	}
+
+	@media (max-width: 640px) {
+		#main-content {
+			gap: var(--space-3);
+		}
+	}
+
 	@media (prefers-reduced-motion: reduce) {
 		.loading-spinner {
 			animation: none;
 			border-top-color: var(--color-accent);
 		}
-		
+
 		.skip-link {
 			transition: none;
 		}

@@ -66,7 +66,7 @@
 
 	.card--hero {
 		padding: var(--space-4);
-		min-height: 160px;
+		min-height: 280px;
 		background: linear-gradient(135deg, var(--color-surface-2) 0%, var(--color-surface-1) 100%);
 	}
 
@@ -89,7 +89,7 @@
 
 		.card--hero {
 			padding: var(--space-3);
-			min-height: 140px;
+			min-height: 240px;
 		}
 	}
 
@@ -107,15 +107,21 @@
 
 	/* Elevation shadows */
 	.card--elevation-low {
-		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+		box-shadow:
+			0 1px 3px rgba(0, 0, 0, 0.12),
+			0 1px 2px rgba(0, 0, 0, 0.24);
 	}
 
 	.card--elevation-medium {
-		box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+		box-shadow:
+			0 3px 6px rgba(0, 0, 0, 0.16),
+			0 3px 6px rgba(0, 0, 0, 0.23);
 	}
 
 	.card--elevation-high {
-		box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+		box-shadow:
+			0 10px 20px rgba(0, 0, 0, 0.19),
+			0 6px 6px rgba(0, 0, 0, 0.23);
 	}
 
 	/* Interactive hover effects */
@@ -134,15 +140,21 @@
 	}
 
 	.card--interactive.card--elevation-low:hover {
-		box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+		box-shadow:
+			0 3px 6px rgba(0, 0, 0, 0.16),
+			0 3px 6px rgba(0, 0, 0, 0.23);
 	}
 
 	.card--interactive.card--elevation-medium:hover {
-		box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+		box-shadow:
+			0 10px 20px rgba(0, 0, 0, 0.19),
+			0 6px 6px rgba(0, 0, 0, 0.23);
 	}
 
 	.card--interactive.card--elevation-high:hover {
-		box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+		box-shadow:
+			0 14px 28px rgba(0, 0, 0, 0.25),
+			0 10px 10px rgba(0, 0, 0, 0.22);
 	}
 
 	/* Loading skeleton */

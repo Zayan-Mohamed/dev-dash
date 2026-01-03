@@ -24,8 +24,6 @@
 				} else {
 					// Timer finished
 					if (interval) clearInterval(interval);
-					isRunning = false;
-					
 					// Show notification
 					if ('Notification' in window && Notification.permission === 'granted') {
 						new Notification(`${mode === 'work' ? 'Work' : 'Break'} session completed!`, {
@@ -33,7 +31,7 @@
 							icon: '/icons/icon128.png'
 						});
 					}
-					
+
 					// Auto switch mode
 					mode = mode === 'work' ? 'break' : 'work';
 					timeLeft = mode === 'work' ? WORK_TIME : BREAK_TIME;
@@ -66,30 +64,30 @@
 		if ('Notification' in window && Notification.permission === 'default') {
 			Notification.requestPermission();
 		}
-		
+
 		return () => {
 			if (interval) clearInterval(interval);
 		};
 	});
 </script>
 
-<Card variant="medium" elevation="medium" class="pomodoro-card" {animationDelay}>
+<Card variant="hero" elevation="medium" class="pomodoro-card" {animationDelay}>
 	<div class="pomodoro-container">
 		<!-- Card Header -->
 		<div class="pomodoro-header">
-			<div class="pomodoro-header__title">
-				<Timer size={16} class="text-zinc-400" />
-				<span>Pomodoro Timer</span>
-			</div>
-			<div class="pomodoro-header__mode">
-				{#if mode === 'work'}
-					<Briefcase size={14} class="text-blue-400" />
-					<span class="text-blue-400">Work</span>
-				{:else}
-					<Coffee size={14} class="text-green-400" />
-					<span class="text-green-400">Break</span>
-				{/if}
-			</div>
+			<Timer size={20} class="text-orange-500" />
+			<h3 class="pomodoro-title">Pomodoro Timer</h3>
+		</div>
+
+		<!-- Mode Indicator -->
+		<div class="pomodoro-mode">
+			{#if mode === 'work'}
+				<Briefcase size={14} class="text-blue-400" />
+				<span class="text-blue-400">Work</span>
+			{:else}
+				<Coffee size={14} class="text-green-400" />
+				<span class="text-green-400">Break</span>
+			{/if}
 		</div>
 
 		<!-- Timer Display -->
@@ -142,29 +140,31 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: var(--space-6);
-		height: 100%;
+		justify-content: center;
+		gap: var(--space-3);
+		padding: var(--space-4) 0;
+		min-height: 280px;
 	}
 
 	.pomodoro-header {
 		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		width: 100%;
-	}
-
-	.pomodoro-header__title {
-		display: flex;
 		align-items: center;
 		gap: var(--space-2);
-		font-size: var(--font-size-sm);
-		font-family: var(--font-mono);
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		color: var(--color-text-secondary);
+		padding-bottom: var(--space-2);
+		border-bottom: 1px solid var(--color-border);
+		width: fit-content;
+		margin-bottom: var(--space-3);
 	}
 
-	.pomodoro-header__mode {
+	.pomodoro-title {
+		font-size: var(--font-size-base);
+		font-weight: var(--font-weight-semibold);
+		color: var(--color-text-primary);
+		font-family: 'Courier New', monospace;
+		margin: 0;
+	}
+
+	.pomodoro-mode {
 		display: flex;
 		align-items: center;
 		gap: var(--space-2);
@@ -172,6 +172,7 @@
 		font-family: var(--font-mono);
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
+		margin-bottom: var(--space-2);
 	}
 
 	.pomodoro-timer {
@@ -181,7 +182,10 @@
 		color: var(--color-text-primary);
 		font-variant-numeric: tabular-nums;
 		letter-spacing: -0.02em;
-		margin: auto 0;
+		flex: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.pomodoro-actions {
@@ -189,6 +193,8 @@
 		gap: var(--space-3);
 		width: 100%;
 		justify-content: center;
+		flex-shrink: 0;
+		padding-bottom: var(--space-2);
 	}
 
 	.pomodoro-button {
@@ -243,9 +249,18 @@
 	}
 
 	/* Responsive adjustments */
+	@media (max-width: 1024px) {
+		.pomodoro-container {
+			min-height: 240px;
+			padding: var(--space-4) 0;
+		}
+	}
+
 	@media (max-width: 768px) {
 		.pomodoro-container {
 			gap: var(--space-4);
+			min-height: 220px;
+			padding: var(--space-3) 0;
 		}
 
 		.pomodoro-timer {
@@ -260,6 +275,13 @@
 			padding: var(--space-2);
 			min-width: 44px;
 			min-height: 44px;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.pomodoro-container {
+			min-height: 200px;
+			padding: var(--space-2) 0;
 		}
 	}
 

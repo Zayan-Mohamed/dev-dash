@@ -107,7 +107,7 @@
 		align-items: center;
 		justify-content: center;
 		gap: var(--space-2);
-		min-height: 160px;
+		min-height: 280px;
 		padding: var(--space-4) 0;
 	}
 
@@ -122,7 +122,7 @@
 	}
 
 	.clock-hero__time {
-		font-size: var(--font-size-4xl);
+		font-size: clamp(3rem, 7vw, 5rem);
 		font-family: 'Courier New', monospace;
 		font-weight: var(--font-weight-bold);
 		color: var(--color-text-primary);
@@ -167,13 +167,19 @@
 	}
 
 	/* Responsive adjustments */
+	@media (max-width: 1024px) {
+		.clock-hero__content {
+			min-height: 240px;
+		}
+	}
+
 	@media (max-width: 768px) {
 		.clock-hero__greeting {
 			font-size: var(--font-size-base);
 		}
 
 		.clock-hero__time {
-			font-size: var(--font-size-3xl);
+			font-size: clamp(2.25rem, 6vw, 3rem);
 		}
 
 		.clock-hero__date {
@@ -181,7 +187,8 @@
 		}
 
 		.clock-hero__content {
-			min-height: 140px;
+			min-height: 220px;
+			padding: var(--space-3) 0;
 		}
 	}
 
@@ -191,7 +198,7 @@
 		}
 
 		.clock-hero__time {
-			font-size: var(--font-size-2xl);
+			font-size: clamp(1.75rem, 5.5vw, 2.25rem);
 		}
 
 		.clock-hero__date {
@@ -199,27 +206,29 @@
 		}
 
 		.clock-hero__content {
-			min-height: 120px;
+			min-height: 200px;
 			gap: var(--space-2);
+			padding: var(--space-2) 0;
 		}
 	}
 
 	/* Tablet landscape */
 	@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
 		.clock-hero__content {
-			min-height: 140px;
+			min-height: 220px;
 		}
 
 		.clock-hero__time {
-			font-size: var(--font-size-3xl);
+			font-size: clamp(2.5rem, 6vw, 3.5rem);
 		}
 	}
 
 	/* Mobile landscape */
 	@media (max-width: 896px) and (orientation: landscape) {
 		.clock-hero__content {
-			min-height: 120px;
+			min-height: 200px;
 			gap: var(--space-2);
+			padding: var(--space-2) 0;
 		}
 
 		.clock-hero__greeting {
@@ -227,7 +236,7 @@
 		}
 
 		.clock-hero__time {
-			font-size: var(--font-size-2xl);
+			font-size: clamp(1.75rem, 5.5vw, 2.25rem);
 		}
 
 		.clock-hero__date {

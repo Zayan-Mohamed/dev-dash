@@ -1,13 +1,21 @@
 <script lang="ts">
+	import { Globe } from 'lucide-svelte';
 	import type { Site } from '$lib/services/topSites';
 	import Card from './Card.svelte';
 
-	let { sites, loading = false, animationDelay = 0 }: { sites: Site[]; loading?: boolean; animationDelay?: number } = $props();
+	let {
+		sites,
+		loading = false,
+		animationDelay = 0
+	}: { sites: Site[]; loading?: boolean; animationDelay?: number } = $props();
 </script>
 
 <Card variant="medium" elevation="low" class="top-sites-card" {animationDelay}>
 	<div class="top-sites-header">
-		<h3 class="top-sites-title">Quick Access</h3>
+		<div class="top-sites-header__main">
+			<Globe size={20} class="text-orange-500" />
+			<h3 class="top-sites-title">Quick Access</h3>
+		</div>
 		<span class="top-sites-count">{sites.length} sites</span>
 	</div>
 
@@ -50,21 +58,25 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		margin-bottom: var(--space-3);
+		margin-bottom: var(--space-1);
 		padding-bottom: var(--space-2);
 		border-bottom: 1px solid var(--color-border);
+	}
+
+	.top-sites-header__main {
+		display: flex;
+		align-items: center;
+		gap: var(--space-2);
 	}
 
 	.top-sites-title {
 		font-size: var(--font-size-base);
 		font-weight: var(--font-weight-semibold);
 		color: var(--color-text-primary);
-		font-family: 'Courier New', monospace;
 	}
 
 	.top-sites-count {
 		font-size: var(--font-size-xs);
-		font-family: 'Courier New', monospace;
 		color: var(--color-text-muted);
 		background: var(--color-surface-2);
 		padding: var(--space-1) var(--space-2);
@@ -99,11 +111,7 @@
 		content: '';
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(
-			135deg,
-			rgba(88, 166, 255, 0.05) 0%,
-			transparent 100%
-		);
+		background: linear-gradient(135deg, rgba(88, 166, 255, 0.05) 0%, transparent 100%);
 		opacity: 0;
 		transition: opacity var(--duration-fast) var(--easing-standard);
 	}
