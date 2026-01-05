@@ -359,19 +359,39 @@ pnpm build
 
 ## 🤝 Contributing
 
-Contributions, issues, and feature requests are welcome!
+Contributions, issues, and feature requests are welcome! We love community input.
 
-1. **Fork the repository**
-2. **Create your feature branch** (`git checkout -b feature/AmazingFeature`)
-3. **Commit your changes** (`git commit -m 'Add some AmazingFeature'`)
-4. **Push to the branch** (`git push origin feature/AmazingFeature`)
-5. **Open a Pull Request**
+See our [**Contributing Guide**](CONTRIBUTING.md) for detailed information on:
 
-Please ensure:
+- **Reporting Bugs** - How to submit effective bug reports
+- **Suggesting Features** - Share your ideas for new features
+- **Code Contributions** - Development setup and coding standards
+- **Documentation** - Help improve our docs
+- **Pull Request Process** - How to submit PRs that get merged
 
-- Code follows TypeScript strict mode
-- Components use Svelte 5 runes syntax
-- All Chrome API calls have environment checks
+### Quick Start for Contributors
+
+```bash
+# Fork and clone
+git clone https://github.com/YOUR_USERNAME/dev-dash.git
+cd dev-dash
+
+# Install and develop
+pnpm install
+pnpm dev
+
+# Before submitting
+pnpm check && pnpm lint && pnpm test && pnpm build
+```
+
+**Guidelines:**
+
+- Follow TypeScript strict mode (no `any` types)
+- Use Svelte 5 runes syntax (`$state`, `$derived`, `$effect`)
+- All Chrome API calls must have environment checks
+- Follow [Conventional Commits](https://www.conventionalcommits.org/) format
+
+📖 **[Read the full Contributing Guide →](CONTRIBUTING.md)**
 
 ---
 
@@ -387,6 +407,14 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 - GitHub: [@Zayan-Mohamed](https://github.com/Zayan-Mohamed)
 - Repository: [dev-dash](https://github.com/Zayan-Mohamed/dev-dash)
+
+---
+
+## 👥 Contributors
+
+Thanks to these wonderful people who have contributed to this project:
+
+- **[Duwaragie Kugaraj](https://github.com/duwaragie)** ([@duwaragie](mailto:duwaragie22@gmail.com)) - Helped revamp the UI
 
 ---
 
