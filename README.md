@@ -1,17 +1,16 @@
 <div align="center">
-  <img src="public/Asset 1.png" alt="DevDash Logo">
+  <img src="public/Asset 1.png" alt="DevDash Logo" width="300" >
 
-  
-  **A Zero-Latency Developer New Tab Extension**
-  
-  [![Chrome Extension](https://img.shields.io/badge/Chrome-Extension-4285F4?logo=googlechrome&logoColor=white)](https://chrome.google.com/webstore)
-  [![Manifest V3](https://img.shields.io/badge/Manifest-V3-green?logo=googlechrome)](https://developer.chrome.com/docs/extensions/mv3/)
-  [![SvelteKit](https://img.shields.io/badge/SvelteKit-2.x-FF3E00?logo=svelte&logoColor=white)](https://kit.svelte.dev/)
-  [![Svelte](https://img.shields.io/badge/Svelte-5.45-FF3E00?logo=svelte&logoColor=white)](https://svelte.dev/)
-  [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-  [![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
-  [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-  [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+**A Zero-Latency Developer New Tab Extension**
+
+[![Chrome Extension](https://img.shields.io/badge/Chrome-Extension-4285F4?logo=googlechrome&logoColor=white)](https://chrome.google.com/webstore)
+[![Manifest V3](https://img.shields.io/badge/Manifest-V3-green?logo=googlechrome)](https://developer.chrome.com/docs/extensions/mv3/)
+[![SvelteKit](https://img.shields.io/badge/SvelteKit-2.x-FF3E00?logo=svelte&logoColor=white)](https://kit.svelte.dev/)
+[![Svelte](https://img.shields.io/badge/Svelte-5.45-FF3E00?logo=svelte&logoColor=white)](https://svelte.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
   <p align="center">
     <strong>Replace your Chrome new tab with a blazing-fast, keyboard-first developer dashboard</strong>
@@ -118,33 +117,71 @@ Download the latest `.crx` or `.zip` from [Releases](#).
 
 ## 🛠️ Development
 
+### Prerequisites
+
+- Node.js 18+
+- pnpm (recommended) or npm
+
+### Development Commands
+
 ```bash
 # Install dependencies
 pnpm install
 
-# Dev server (browser preview)
+# Dev server (browser preview at http://localhost:5173)
 pnpm dev
 
-# Build for Chrome
+# Build for Chrome Extension
 pnpm build
+# Output: build/ directory (load unpacked in Chrome)
 
 # Type checking
 pnpm check
 
-# Lint & format
-pnpm lint && pnpm format
+# Lint code
+pnpm lint
+
+# Format code
+pnpm format
+
+# Run unit tests
+pnpm test:unit
+
+# Run E2E tests
+pnpm test:e2e
+
+# Run all tests
+pnpm test
 ```
+
+### Tailwind CSS v4 Configuration
+
+This project uses **Tailwind CSS v4** with the new CSS-first configuration approach:
+
+- **No `tailwind.config.js`** - Configuration is done via CSS `@import` and `@plugin` directives
+- **Entry points:**
+  - [src/app.css](src/app.css) - Main Tailwind import with custom design system
+  - [src/routes/layout.css](src/routes/layout.css) - Tailwind plugins (@tailwindcss/forms, @tailwindcss/typography)
+- **Vite plugin:** Uses `@tailwindcss/vite` for seamless integration
+- **Custom theme:** See [src/lib/styles/tokens.css](src/lib/styles/tokens.css) for CSS variables
 
 ## 📦 Tech Stack
 
-| Technology    | Version | Purpose                 |
-| ------------- | ------- | ----------------------- |
-| Svelte        | 5.45+   | UI framework with runes |
-| SvelteKit     | 2.49+   | Build tooling           |
-| TypeScript    | 5.9+    | Type safety             |
-| Tailwind CSS  | 4.1+    | Styling                 |
-| Vite          | 7.2+    | Bundler                 |
-| lucide-svelte | latest  | Icons                   |
+| Technology              | Version | Purpose                  |
+| ----------------------- | ------- | ------------------------ |
+| Svelte                  | 5.45.6  | UI framework with runes  |
+| SvelteKit               | 2.49.1  | Build tooling            |
+| TypeScript              | 5.9.3   | Type safety              |
+| Tailwind CSS            | 4.1.17  | Styling (CSS-first v4)   |
+| @tailwindcss/vite       | 4.1.17  | Vite integration         |
+| @tailwindcss/forms      | 0.5.10  | Form styling plugin      |
+| @tailwindcss/typography | 0.5.19  | Typography plugin        |
+| Vite                    | 7.2.6   | Bundler                  |
+| Vitest                  | 4.0.15  | Testing framework        |
+| Playwright              | 1.57.0  | E2E testing              |
+| lucide-svelte           | 0.562.0 | Tree-shakeable SVG icons |
+| ESLint                  | 9.39.1  | Code linting             |
+| Prettier                | 3.7.4   | Code formatting          |
 
 ## 📁 Project Structure
 
@@ -309,11 +346,14 @@ pnpm build
 
 ## 📖 Resources
 
-- [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview)
-- [SvelteKit Documentation](https://kit.svelte.dev/docs)
-- [Chrome Extension Docs](https://developer.chrome.com/docs/extensions/mv3/)
-- [Tailwind CSS v4 Beta](https://tailwindcss.com/docs)
-- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
+- [Svelte 5 Documentation](https://svelte.dev/docs/svelte/overview) - Runes API and component syntax
+- [SvelteKit Documentation](https://kit.svelte.dev/docs) - Build tooling and routing
+- [Chrome Extension Docs](https://developer.chrome.com/docs/extensions/mv3/) - Manifest V3 API reference
+- [Tailwind CSS v4 Documentation](https://tailwindcss.com/docs) - CSS-first configuration
+- [@tailwindcss/vite Plugin](https://tailwindcss.com/docs/installation/vite) - Vite integration guide
+- [TypeScript Handbook](https://www.typescriptlang.org/docs/) - Language reference
+- [Lucide Icons](https://lucide.dev/) - Icon library
+- [Vitest Documentation](https://vitest.dev/) - Testing framework
 
 ---
 
