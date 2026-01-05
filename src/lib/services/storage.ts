@@ -30,6 +30,7 @@ export interface StorageData {
 		showGitHubStats: boolean;
 		showTopSites: boolean;
 		showTechNews: boolean;
+		showSystemStats: boolean;
 		githubUsername: string;
 		githubToken: string;
 		displayName: string;
@@ -49,6 +50,7 @@ const DEFAULT_DATA: StorageData = {
 		showGitHubStats: true,
 		showTopSites: true,
 		showTechNews: true,
+		showSystemStats: true,
 		githubUsername: '',
 		githubToken: '',
 		displayName: '',

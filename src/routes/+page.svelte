@@ -10,6 +10,7 @@
 	import Weather from '$lib/components/Weather.svelte';
 	import TechNews from '$lib/components/TechNews.svelte';
 	import GitHubStats from '$lib/components/GitHubStats.svelte';
+	import SystemStats from '$lib/components/SystemStats.svelte';
 	import { getTopSites } from '$lib/services/topSites';
 	import type { Site } from '$lib/services/topSites';
 	import { settings } from '$lib/stores/settings';
@@ -152,6 +153,9 @@
 	{#snippet rightSidebar()}
 		{#if $settings.showWeather}
 			<Weather animationDelay={100} />
+		{/if}
+		{#if $settings.showSystemStats}
+			<SystemStats animationDelay={150} />
 		{/if}
 		{#if screenWidth > 1024 && $settings.showTechNews}
 			<TechNews animationDelay={200} />

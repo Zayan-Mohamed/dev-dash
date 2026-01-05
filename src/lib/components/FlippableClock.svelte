@@ -36,11 +36,11 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<!-- Flip Button (only visible when Pomodoro is enabled) -->
 	{#if $settings.showPomodoro}
-		<button 
-			class="flip-button" 
+		<button
+			class="flip-button"
 			onclick={toggleFlip}
 			aria-label={isFlipped ? 'Show Clock' : 'Show Pomodoro'}
 			title={isFlipped ? 'Show Clock' : 'Show Pomodoro'}

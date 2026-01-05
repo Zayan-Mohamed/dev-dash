@@ -10,6 +10,7 @@ const DEFAULT_SETTINGS: StorageData['settings'] = {
 	showGitHubStats: true,
 	showTopSites: false,
 	showTechNews: true,
+	showSystemStats: true,
 	githubUsername: '',
 	githubToken: '',
 	displayName: '',
