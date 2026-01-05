@@ -39,7 +39,12 @@
 				},
 				{ key: 'showPomodoro', label: 'Pomodoro Timer', description: 'Enable focus timer' },
 				{ key: 'showNotepad', label: 'Notepad', description: 'Enable quick notes' },
-				{ key: 'showTechNews', label: 'Tech News', description: 'Show latest tech news' }
+				{ key: 'showTechNews', label: 'Tech News', description: 'Show latest tech news' },
+				{
+					key: 'showSystemStats',
+					label: 'System Stats',
+					description: 'Display CPU and Memory usage'
+				}
 			]
 		},
 		{
