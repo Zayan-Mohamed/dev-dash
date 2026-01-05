@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="public/Asset 1.png" alt="DevDash Logo" width="300" >
+  <img src="https://cdn.jsdelivr.net/gh/Zayan-Mohamed/dev-dash/public/Asset%201.png" alt="DevDash Logo" width=300 >
 
 **A Zero-Latency Developer New Tab Extension**
 
@@ -31,13 +31,13 @@
 ## 📸 Screenshots
 
 <div align="center">
-  <img src="public/image.png" alt="DevDash Main View" width="800">
+  <img src="https://cdn.jsdelivr.net/gh/Zayan-Mohamed/dev-dash/public/image.png" alt="DevDash Main View" width="800">
   <p><i>Main dashboard with clock, top sites, and omnibar</i></p>
   
-  <img src="public/img2.png" alt="DevDash Widgets" width="800">
+  <img src="https://cdn.jsdelivr.net/gh/Zayan-Mohamed/dev-dash/public/img2.png" alt="DevDash Widgets" width="800">
   <p><i>Optional widgets: Pomodoro, Notepad, Weather, and more</i></p>
   
-  <img src="public/img3.png" alt="DevDash Settings" width="800">
+  <img src="https://cdn.jsdelivr.net/gh/Zayan-Mohamed/dev-dash/public/img3.png" alt="DevDash Settings" width="800">
   <p><i>Customizable settings panel</i></p>
 </div>
 
