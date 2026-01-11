@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { Settings as SettingsIcon } from 'lucide-svelte';
 	import CompactWeather from './CompactWeather.svelte';
+	import SystemStats from './SystemStats.svelte';
+	import { settings } from '$lib/stores/settings';
 
 	interface Props {
 		onSettingsToggle: () => void;
@@ -17,6 +19,9 @@
 		</div>
 
 		<div class="nav-header__actions">
+			{#if $settings.showSystemStats}
+				<SystemStats />
+			{/if}
 			<CompactWeather />
 			<button
 				onclick={onSettingsToggle}
