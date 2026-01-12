@@ -415,6 +415,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 Thanks to these wonderful people who have contributed to this project:
 
 - **[Duwaragie Kugaraj](https://github.com/duwaragie)** ([@duwaragie](mailto:duwaragie22@gmail.com)) - Helped revamp the UI
+- **[ERJavier](https://github.com/ERJavier)** - Implemented the real-time CPU/Memory usage widgets
 
 ---
 
