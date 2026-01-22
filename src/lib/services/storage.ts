@@ -18,9 +18,18 @@ declare const chrome: ChromeStorage;
 // Type guard for chrome extension environment
 const isExtension = typeof chrome !== 'undefined' && typeof chrome?.storage !== 'undefined';
 
+export interface Notepad {
+	id: string;
+	title: string;
+	content: string;
+	createdAt: number;
+	updatedAt: number;
+}
+
 export interface StorageData {
 	commandHistory: string[];
-	notepadContent: string;
+	notepadContent: string; // Legacy support
+	notepads: Notepad[];
 	settings: {
 		use24Hour: boolean;
 		showGreeting: boolean;
@@ -41,6 +50,29 @@ export interface StorageData {
 const DEFAULT_DATA: StorageData = {
 	commandHistory: [],
 	notepadContent: '',
+	notepads: [
+		{
+			id: '1',
+			title: 'Scratchpad 1',
+			content: '',
+			createdAt: Date.now(),
+			updatedAt: Date.now()
+		},
+		{
+			id: '2',
+			title: 'Scratchpad 2',
+			content: '',
+			createdAt: Date.now(),
+			updatedAt: Date.now()
+		},
+		{
+			id: '3',
+			title: 'Scratchpad 3',
+			content: '',
+			createdAt: Date.now(),
+			updatedAt: Date.now()
+		}
+	],
 	settings: {
 		use24Hour: false,
 		showGreeting: true,
