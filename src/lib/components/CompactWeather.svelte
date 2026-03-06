@@ -1,92 +1,37 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { MapPin, RefreshCw, Thermometer } from 'lucide-svelte';
+	import { weatherState, weatherActions } from '$lib/stores/weather.svelte';
 
 	let { animationDelay = 0 }: { animationDelay?: number } = $props();
 
-	let temperature = $state<number | null>(null);
-	let location = $state<string | null>(null);
-	let loading = $state(true);
-	let error = $state<string | null>(null);
-	let refreshing = $state(false);
-
-	async function fetchWeatherData() {
-		try {
-			loading = true;
-			error = null;
-
-			// Get user's location
-			const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-				navigator.geolocation.getCurrentPosition(resolve, reject, {
-					timeout: 10000,
-					enableHighAccuracy: false
-				});
-			});
-
-			const { latitude, longitude } = position.coords;
-
-			// Fetch weather data from Open-Meteo API
-			const response = await fetch(
-				`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&timezone=auto&forecast_days=1`
-			);
-
-			if (!response.ok) {
-				throw new Error('Weather API request failed');
-			}
-
-			const data = await response.json();
-
-			temperature = Math.round(data.current.temperature_2m);
-			location = null; // We'll get location name from reverse geocoding
-
-			// Try to get location name
-			try {
-				const locationResponse = await fetch(
-					`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
-				);
-				if (locationResponse.ok) {
-					const locationData = await locationResponse.json();
-					location = locationData.city || locationData.locality || `${latitude.toFixed(2)}, ${longitude.toFixed(2)}`;
-				}
-			} catch {
-				location = `${latitude.toFixed(2)}, ${longitude.toFixed(2)}`;
-			}
-		} catch (err) {
-			console.error('Weather fetch error:', err);
-			error = err instanceof Error ? err.message : 'Failed to fetch weather';
-		} finally {
-			loading = false;
-			refreshing = false;
-		}
-	}
-
 	onMount(() => {
-		fetchWeatherData();
+		// Fetch will use cache if available or deduplicate with Weather component
+		weatherActions.fetch();
 	});
 
 	async function handleRefresh() {
-		refreshing = true;
-		await fetchWeatherData();
+		await weatherActions.refresh();
 	}
 </script>
 
-{#if loading}
+{#if weatherState.loading}
 	<div class="compact-weather compact-weather--loading">
 		<div class="compact-weather__spinner"></div>
 	</div>
-{:else if error}
+{:else if weatherState.error}
 	<div class="compact-weather compact-weather--error">
 		<span class="compact-weather__error-icon">⚠️</span>
 	</div>
-{:else}
+{:else if weatherState.data}
 	<div class="compact-weather" title="Weather">
 		<div class="compact-weather__temp">
-			<span class="compact-weather__temp-value">{temperature}°</span>
+			<span class="compact-weather__temp-value">{weatherState.data.temperature}°</span>
 		</div>
-		{#if location}
+		{#if weatherState.data.location}
 			<div class="compact-weather__location">
 				<MapPin size={10} />
-				<span class="compact-weather__location-text">{location}</span>
+				<span class="compact-weather__location-text">{weatherState.data.location}</span>
 			</div>
 		{/if}
 	</div>

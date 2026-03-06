@@ -1,74 +1,15 @@
 <script lang="ts">
 	import { Play, Pause, RotateCcw, Coffee, Briefcase, Timer } from 'lucide-svelte';
 	import Card from './Card.svelte';
+	import { pomodoroState, pomodoroActions } from '$lib/stores/pomodoro.svelte';
 
 	let { animationDelay = 0 }: { animationDelay?: number } = $props();
-
-	const WORK_TIME = 25 * 60;
-	const BREAK_TIME = 5 * 60;
-
-	let timeLeft = $state(WORK_TIME);
-	let isRunning = $state(false);
-	let mode = $state<'work' | 'break'>('work');
-	let interval: ReturnType<typeof setInterval> | undefined;
-
-	function toggleTimer() {
-		if (isRunning) {
-			if (interval) clearInterval(interval);
-			isRunning = false;
-		} else {
-			isRunning = true;
-			interval = setInterval(() => {
-				if (timeLeft > 0) {
-					timeLeft--;
-				} else {
-					// Timer finished
-					if (interval) clearInterval(interval);
-					// Show notification
-					if ('Notification' in window && Notification.permission === 'granted') {
-						new Notification(`${mode === 'work' ? 'Work' : 'Break'} session completed!`, {
-							body: mode === 'work' ? 'Time for a break!' : 'Back to work!',
-							icon: '/icons/icon128.png'
-						});
-					}
-
-					// Auto switch mode
-					mode = mode === 'work' ? 'break' : 'work';
-					timeLeft = mode === 'work' ? WORK_TIME : BREAK_TIME;
-				}
-			}, 1000);
-		}
-	}
-
-	function resetTimer() {
-		if (interval) clearInterval(interval);
-		isRunning = false;
-		timeLeft = mode === 'work' ? WORK_TIME : BREAK_TIME;
-	}
-
-	function toggleMode() {
-		if (interval) clearInterval(interval);
-		isRunning = false;
-		mode = mode === 'work' ? 'break' : 'work';
-		timeLeft = mode === 'work' ? WORK_TIME : BREAK_TIME;
-	}
 
 	function formatTime(seconds: number) {
 		const m = Math.floor(seconds / 60);
 		const s = seconds % 60;
 		return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
 	}
-
-	// Request notification permission on mount
-	$effect(() => {
-		if ('Notification' in window && Notification.permission === 'default') {
-			Notification.requestPermission();
-		}
-
-		return () => {
-			if (interval) clearInterval(interval);
-		};
-	});
 </script>
 
 <Card variant="hero" elevation="medium" class="pomodoro-card" {animationDelay}>
@@ -81,7 +22,7 @@
 
 		<!-- Mode Indicator -->
 		<div class="pomodoro-mode">
-			{#if mode === 'work'}
+			{#if pomodoroState.mode === 'work'}
 				<Briefcase size={14} class="text-blue-400" />
 				<span class="text-blue-400">Work</span>
 			{:else}
@@ -92,18 +33,18 @@
 
 		<!-- Timer Display -->
 		<div class="pomodoro-timer">
-			{formatTime(timeLeft)}
+			{formatTime(pomodoroState.timeLeft)}
 		</div>
 
 		<!-- Action Buttons -->
 		<div class="pomodoro-actions">
 			<button
-				onclick={toggleTimer}
+				onclick={pomodoroActions.toggle}
 				class="pomodoro-button pomodoro-button--primary"
-				title={isRunning ? 'Pause' : 'Start'}
-				aria-label={isRunning ? 'Pause timer' : 'Start timer'}
+				title={pomodoroState.isRunning ? 'Pause' : 'Start'}
+				aria-label={pomodoroState.isRunning ? 'Pause timer' : 'Start timer'}
 			>
-				{#if isRunning}
+				{#if pomodoroState.isRunning}
 					<Pause size={20} />
 				{:else}
 					<Play size={20} />
@@ -111,7 +52,7 @@
 			</button>
 
 			<button
-				onclick={resetTimer}
+				onclick={pomodoroActions.reset}
 				class="pomodoro-button pomodoro-button--secondary"
 				title="Reset"
 				aria-label="Reset timer"
@@ -120,12 +61,12 @@
 			</button>
 
 			<button
-				onclick={toggleMode}
+				onclick={pomodoroActions.toggleMode}
 				class="pomodoro-button pomodoro-button--secondary"
 				title="Switch Mode"
-				aria-label={mode === 'work' ? 'Switch to break mode' : 'Switch to work mode'}
+				aria-label={pomodoroState.mode === 'work' ? 'Switch to break mode' : 'Switch to work mode'}
 			>
-				{#if mode === 'work'}
+				{#if pomodoroState.mode === 'work'}
 					<Coffee size={20} />
 				{:else}
 					<Briefcase size={20} />

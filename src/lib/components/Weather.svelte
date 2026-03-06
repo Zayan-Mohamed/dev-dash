@@ -12,17 +12,9 @@
 		Thermometer
 	} from 'lucide-svelte';
 	import Card from './Card.svelte';
+	import { weatherState, weatherActions } from '$lib/stores/weather.svelte';
 
 	let { animationDelay = 0 }: { animationDelay?: number } = $props();
-
-	let temperature = $state<number | null>(null);
-	let weatherCode = $state<number | null>(null);
-	let location = $state<string | null>(null);
-	let windSpeed = $state<number | null>(null);
-	let humidity = $state<number | null>(null);
-	let loading = $state(true);
-	let error = $state<string | null>(null);
-	let refreshing = $state(false);
 
 	// WMO Weather interpretation codes (WW)
 	function getWeatherIcon(code: number | null) {
@@ -53,87 +45,36 @@
 		return 'Unknown';
 	}
 
-	async function fetchWeatherData() {
-		if (!navigator.geolocation) {
-			error = 'Geolocation not supported';
-			loading = false;
-			return;
-		}
-
-		navigator.geolocation.getCurrentPosition(
-			async (position) => {
-				try {
-					loading = true;
-					error = null;
-
-					const { latitude, longitude } = position.coords;
-
-					// Fetch weather data
-					const weatherRes = await fetch(
-						`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=relative_humidity_2m`
-					);
-					const weatherData = await weatherRes.json();
-
-					temperature = weatherData.current_weather.temperature;
-					weatherCode = weatherData.current_weather.weathercode;
-					windSpeed = weatherData.current_weather.windspeed;
-
-					// Get humidity from hourly data (first value)
-					if (weatherData.hourly?.relative_humidity_2m?.[0]) {
-						humidity = weatherData.hourly.relative_humidity_2m[0];
-					}
-
-					// Fetch location name using reverse geocoding
-					try {
-						const geoRes = await fetch(
-							`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
-						);
-						const geoData = await geoRes.json();
-						location =
-							geoData.city || geoData.locality || geoData.principalSubdivision || 'Unknown';
-					} catch {
-						location = 'Unknown location';
-					}
-				} catch (err) {
-					error = 'Failed to fetch weather';
-					console.error(err);
-				} finally {
-					loading = false;
-					refreshing = false;
-				}
-			},
-			() => {
-				error = 'Location access denied';
-				loading = false;
-				refreshing = false;
-			}
-		);
-	}
-
 	onMount(() => {
-		fetchWeatherData();
+		// Fetch will use cache if available or deduplicate with other components
+		weatherActions.fetch();
 	});
 
 	async function handleRefresh() {
-		refreshing = true;
-		await fetchWeatherData();
+		await weatherActions.refresh();
 	}
 
-	let Icon = $derived(getWeatherIcon(weatherCode));
-	let description = $derived(getWeatherDescription(weatherCode));
+	let Icon = $derived(getWeatherIcon(weatherState.data?.weatherCode ?? null));
+	let description = $derived(getWeatherDescription(weatherState.data?.weatherCode ?? null));
 </script>
 
-<Card variant="medium" elevation="medium" {loading} {animationDelay} class="weather-card">
-	{#if error}
+<Card
+	variant="medium"
+	elevation="medium"
+	loading={weatherState.loading}
+	{animationDelay}
+	class="weather-card"
+>
+	{#if weatherState.error}
 		<div class="weather__error">
 			<Cloud size={24} class="text-zinc-600" />
-			<p class="mt-2 text-center font-mono text-xs text-red-400">{error}</p>
+			<p class="mt-2 text-center font-mono text-xs text-red-400">{weatherState.error}</p>
 			<button onclick={handleRefresh} class="weather__refresh-btn mt-3">
-				<RefreshCw size={14} class={refreshing ? 'animate-spin' : ''} />
+				<RefreshCw size={14} class={weatherState.refreshing ? 'animate-spin' : ''} />
 				Retry
 			</button>
 		</div>
-	{:else}
+	{:else if weatherState.data}
 		<div class="weather">
 			<!-- Weather Header -->
 			<div class="weather-header">
@@ -144,14 +85,14 @@
 			<!-- Main Temperature Display -->
 			<div class="weather-main">
 				<div class="weather-temp-display">
-					<span class="weather-temp">{temperature}°</span>
+					<span class="weather-temp">{weatherState.data.temperature}°</span>
 					<span class="weather-unit">C</span>
 				</div>
 				<p class="weather-description">{description}</p>
-				{#if location}
+				{#if weatherState.data.location}
 					<div class="weather-location">
 						<MapPin size={12} />
-						<span>{location}</span>
+						<span>{weatherState.data.location}</span>
 					</div>
 				{/if}
 			</div>

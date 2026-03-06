@@ -35,6 +35,7 @@
 	let loading = $state(true);
 	let error = $state<string | null>(null);
 	let refreshing = $state(false);
+	let debounceTimer: ReturnType<typeof setTimeout> | undefined;
 
 	async function fetchGitHubData() {
 		try {
@@ -44,42 +45,42 @@
 			// Fetch User Stats if username is set
 			if ($settings.githubUsername) {
 				console.log('Fetching GitHub data for:', $settings.githubUsername);
-				
+
 				// Prepare headers with token if available
 				const headers: HeadersInit = $settings.githubToken
 					? { Authorization: `Bearer ${$settings.githubToken}` }
 					: {};
-				
-				const userRes = await fetch(`https://api.github.com/users/${$settings.githubUsername}`, { headers });
+
+				const userRes = await fetch(`https://api.github.com/users/${$settings.githubUsername}`, {
+					headers
+				});
 				console.log('User fetch response status:', userRes.status);
-				
+
 				if (userRes.ok) {
 					userStats = await userRes.json();
 
-					// Fetch ALL user's repos to calculate accurate totals
+					// Fetch ALL user's repos (up to 100) and extract recent repos from it
 					const allReposRes = await fetch(
-						`https://api.github.com/users/${$settings.githubUsername}/repos?per_page=100`,
+						`https://api.github.com/users/${$settings.githubUsername}/repos?per_page=100&sort=updated`,
 						{ headers }
 					);
 					if (allReposRes.ok) {
-						const allRepos = await allReposRes.json();
-						// Calculate total stars and forks from all repos
-						totalStars = allRepos.reduce((sum: number, repo: Repo) => sum + repo.stargazers_count, 0);
-						totalForks = allRepos.reduce((sum: number, repo: Repo) => sum + repo.forks_count, 0);
-					}
+						const allRepos: Repo[] = await allReposRes.json();
 
-					// Fetch recent repos (limit to 5 for display)
-					const recentReposRes = await fetch(
-						`https://api.github.com/users/${$settings.githubUsername}/repos?sort=updated&per_page=5`,
-						{ headers }
-					);
-					if (recentReposRes.ok) {
-						userRepos = await recentReposRes.json();
+						// Calculate total stars and forks from all repos
+						totalStars = allRepos.reduce(
+							(sum: number, repo: Repo) => sum + repo.stargazers_count,
+							0
+						);
+						totalForks = allRepos.reduce((sum: number, repo: Repo) => sum + repo.forks_count, 0);
+
+						// Extract recent 5 repos (already sorted by updated)
+						userRepos = allRepos.slice(0, 5);
 					}
 				} else {
 					const errorData = await userRes.json().catch(() => ({}));
 					console.error('GitHub API error:', userRes.status, errorData);
-					
+
 					if (userRes.status === 404) {
 						error = `User "${$settings.githubUsername}" not found`;
 					} else if (userRes.status === 403) {
@@ -102,11 +103,25 @@
 		}
 	}
 
-	// Fetch data when username changes
+	// Fetch data when username or token changes with debouncing
 	$effect(() => {
-		if ($settings.githubUsername) {
-			fetchGitHubData();
+		// Clear existing timer
+		if (debounceTimer) {
+			clearTimeout(debounceTimer);
 		}
+
+		if ($settings.githubUsername) {
+			// Debounce for 500ms to avoid rapid successive calls
+			debounceTimer = setTimeout(() => {
+				fetchGitHubData();
+			}, 500);
+		}
+
+		return () => {
+			if (debounceTimer) {
+				clearTimeout(debounceTimer);
+			}
+		};
 	});
 
 	async function handleRefresh() {
@@ -225,9 +240,7 @@
 		{:else}
 			<div class="github-stats__empty">
 				<Github size={32} class="text-zinc-600" />
-				<p class="mt-3 text-center font-mono text-xs text-zinc-500">
-					Loading GitHub data...
-				</p>
+				<p class="mt-3 text-center font-mono text-xs text-zinc-500">Loading GitHub data...</p>
 			</div>
 		{/if}
 	{/snippet}

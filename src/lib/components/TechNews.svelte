@@ -31,7 +31,20 @@
 				)
 			);
 
-			stories = await Promise.all(storyPromises);
+			// Use Promise.allSettled to get partial results even if some fail
+			const results = await Promise.allSettled(storyPromises);
+
+			// Filter successful results
+			stories = results
+				.filter((result): result is PromiseFulfilledResult<Story> => result.status === 'fulfilled')
+				.map((result) => result.value)
+				.filter((story) => story && story.title && story.url); // Filter out invalid stories
+
+			// Log any failures for debugging
+			const failures = results.filter((result) => result.status === 'rejected');
+			if (failures.length > 0) {
+				console.warn(`Failed to fetch ${failures.length} stories from Hacker News`);
+			}
 		} catch (err) {
 			error = 'Failed to load news';
 		} finally {
