@@ -1,0 +1,9 @@
+name: config
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussions
+    url: https://github.com/Zayan-Mohamed/dev-dash/discussions
+    about: Ask questions, share ideas, and connect with the community.
+  - name: 📖 Documentation
+    url: https://github.com/Zayan-Mohamed/dev-dash#readme
+    about: Read the full README before opening an issue.

@@ -1,0 +1,103 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build & Publish Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: echo "store=$(pnpm store path)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.store }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint & type check
+        run: pnpm lint && pnpm check
+
+      - name: Build extension
+        run: pnpm build
+
+      - name: Extract version from tag
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Create release zip
+        run: |
+          cd build
+          zip -r ../dev-dash-${{ steps.version.outputs.version }}.zip .
+          cd ..
+
+      - name: Extract release notes from CHANGELOG
+        id: changelog
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            const fs = require('fs');
+            const changelog = fs.readFileSync('CHANGELOG.md', 'utf8');
+            const version = '${{ steps.version.outputs.version }}';
+            // Match the section for this version
+            const regex = new RegExp(
+              `## \\[${version.replace(/\./g, '\\.')}\\].*?\\n([\\s\\S]*?)(?=\\n## \\[|$)`
+            );
+            const match = changelog.match(regex);
+            return match ? match[1].trim() : `Release ${version}`;
+
+      - name: Create GitHub Release
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const version = '${{ steps.version.outputs.version }}';
+            const zipPath = `dev-dash-${version}.zip`;
+            const zipData = fs.readFileSync(zipPath);
+
+            const release = await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: context.ref.replace('refs/tags/', ''),
+              name: `DevDash v${version}`,
+              body: `${{ steps.changelog.outputs.result }}`,
+              draft: false,
+              prerelease: context.ref.includes('-'),
+            });
+
+            await github.rest.repos.uploadReleaseAsset({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: release.data.id,
+              name: zipPath,
+              data: zipData,
+            });
+
+            core.notice(`Release created: ${release.data.html_url}`);

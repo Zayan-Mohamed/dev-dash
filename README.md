@@ -9,8 +9,11 @@
 [![Svelte](https://img.shields.io/badge/Svelte-5.45-FF3E00?logo=svelte&logoColor=white)](https://svelte.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![GitHub Release](https://img.shields.io/github/v/release/Zayan-Mohamed/dev-dash?label=Release&color=58a6ff)](https://github.com/Zayan-Mohamed/dev-dash/releases/latest)
+[![CI](https://img.shields.io/github/actions/workflow/status/Zayan-Mohamed/dev-dash/ci.yml?branch=main&label=CI)](https://github.com/Zayan-Mohamed/dev-dash/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Changelog](https://img.shields.io/badge/Changelog-Keep%20a%20Changelog-orange)](CHANGELOG.md)
 
   <p align="center">
     <strong>Replace your Chrome new tab with a blazing-fast, keyboard-first developer dashboard</strong>
@@ -22,7 +25,8 @@
     <a href="#-installation">Installation</a> •
     <a href="#-usage">Usage</a> •
     <a href="#-development">Development</a> •
-    <a href="#-tech-stack">Tech Stack</a>
+    <a href="#-tech-stack">Tech Stack</a> •
+    <a href="CHANGELOG.md">Changelog</a>
   </p>
 </div>
 
@@ -111,9 +115,17 @@ pnpm build
 # 4. Select the `build/` directory
 ```
 
-### Option 2: From Chrome Web Store (Coming Soon)
+### Option 2: Download from GitHub Releases (Recommended)
 
-Download the latest `.crx` or `.zip` from [Releases](#).
+1. Go to the [**Releases page**](https://github.com/Zayan-Mohamed/dev-dash/releases/latest)
+2. Download the `dev-dash-<version>.zip` from the latest release
+3. Extract the zip to a folder on your machine
+4. Open `chrome://extensions` in Chrome
+5. Enable **Developer mode** (top-right toggle)
+6. Click **"Load unpacked"**
+7. Select the extracted folder
+
+### Option 3: From Chrome Web Store (Coming Soon)
 
 ## 🛠️ Development
 
@@ -334,6 +346,7 @@ pnpm build
 
 ## 🗺️ Roadmap
 
+- [x] v1.0.0 — Initial release on GitHub with automated releases
 - [ ] Chrome Web Store release
 - [ ] Firefox/Edge support
 - [ ] Custom widget API
