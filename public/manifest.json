@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
 	"name": "DevDash - Developer New Tab",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "A zero-latency, keyboard-first new tab page for developers",
 	"chrome_url_overrides": {
 		"newtab": "index.html"

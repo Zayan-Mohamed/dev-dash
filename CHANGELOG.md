@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.1] - 2026-03-09
+
+### Fixed
+
+- Remove unused imports (`RefreshCw`, `Thermometer`, `BookOpen`, `onMount`, `ExternalLink`) from `CompactWeather`, `GitHubStats`, `TechNews`, `Weather` components
+- Remove unused `animationDelay` prop and `handleRefresh` function from `CompactWeather`
+- Fix caught-but-unused `err` variable in `TechNews` catch block
+- Add missing keys to all `{#each}` blocks (`svelte/require-each-key`) across `GitHubStats`, `TechNews`, `TopSites`, `Omnibar`, `Settings`
+- Remove useless `{#snippet children()}` wrapper in `GitHubStats`
+- Disable `svelte/no-navigation-without-resolve` rule (Chrome extension — all `<a href>` links are intentionally external)
+- Auto-format all files to satisfy Prettier CI checks
+
+---
+
 ## [1.0.0] - 2026-03-08
 
 ### 🎉 Initial Release
@@ -70,4 +84,5 @@ This is the first stable release of **DevDash** — a zero-latency, keyboard-fir
 
 <!-- Links -->
 
+[1.0.1]: https://github.com/Zayan-Mohamed/dev-dash/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/Zayan-Mohamed/dev-dash/releases/tag/v1.0.0
