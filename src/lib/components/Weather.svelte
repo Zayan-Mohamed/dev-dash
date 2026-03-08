@@ -8,8 +8,7 @@
 		CloudLightning,
 		Wind,
 		MapPin,
-		RefreshCw,
-		Thermometer
+		RefreshCw
 	} from 'lucide-svelte';
 	import Card from './Card.svelte';
 	import { weatherState, weatherActions } from '$lib/stores/weather.svelte';

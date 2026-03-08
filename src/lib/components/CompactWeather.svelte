@@ -1,18 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { MapPin, RefreshCw, Thermometer } from 'lucide-svelte';
+	import { MapPin } from 'lucide-svelte';
 	import { weatherState, weatherActions } from '$lib/stores/weather.svelte';
-
-	let { animationDelay = 0 }: { animationDelay?: number } = $props();
 
 	onMount(() => {
 		// Fetch will use cache if available or deduplicate with Weather component
 		weatherActions.fetch();
 	});
-
-	async function handleRefresh() {
-		await weatherActions.refresh();
-	}
 </script>
 
 {#if weatherState.loading}

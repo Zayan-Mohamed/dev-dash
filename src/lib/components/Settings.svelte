@@ -110,7 +110,7 @@
 
 		<!-- Content -->
 		<div class="settings-content">
-			{#each settingsSections as section, i}
+			{#each settingsSections as section, i (section.title)}
 				{@const IconComponent = section.icon}
 				<div class="settings-section" style="--section-delay: {i * 50}ms">
 					<div class="settings-section-header">
@@ -120,7 +120,7 @@
 
 					{#if section.settings}
 						<div class="settings-list">
-							{#each section.settings as setting, j}
+							{#each section.settings as setting, j (setting.key)}
 								<label class="settings-item" style="--item-delay: {i * 50 + j * 30}ms">
 									<div class="settings-item-content">
 										<span class="settings-item-label">{setting.label}</span>
@@ -143,7 +143,7 @@
 
 					{#if section.inputs}
 						<div class="settings-inputs">
-							{#each section.inputs as input, j}
+							{#each section.inputs as input, j (input.key)}
 								<div class="settings-input-item" style="--item-delay: {i * 50 + j * 30}ms">
 									<label for={input.key} class="settings-input-label">
 										{input.label}

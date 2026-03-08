@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { Github, Star, GitFork, BookOpen, RefreshCw } from 'lucide-svelte';
+	import { Github, Star, GitFork, RefreshCw } from 'lucide-svelte';
 	import { settings } from '$lib/stores/settings';
 	import Card from './Card.svelte';
 
@@ -143,107 +142,105 @@
 </script>
 
 <Card variant="medium" elevation="medium" {loading} {animationDelay} class="github-stats-card">
-	{#snippet children()}
-		{#if !$settings.githubUsername}
-			<div class="github-stats__empty">
-				<Github size={32} class="text-zinc-600" />
-				<p class="mt-3 text-center font-mono text-xs text-zinc-500">
-					Set your GitHub username in settings
-				</p>
-			</div>
-		{:else if error}
-			<div class="github-stats__error">
-				<Github size={24} class="text-zinc-600" />
-				<p class="mt-2 text-center font-mono text-xs text-red-400">{error}</p>
-				<button onclick={handleRefresh} class="github-stats__refresh-btn mt-3">
-					<RefreshCw size={14} class={refreshing ? 'animate-spin' : ''} />
-					Retry
-				</button>
-			</div>
-		{:else if userStats}
-			<div class="github-stats">
-				<!-- User Profile Section -->
-				<div class="user-profile">
-					<img src={userStats.avatar_url} alt={userStats.login} class="user-avatar" />
-					<div class="user-info">
-						<h3 class="user-name">{userStats.login}</h3>
-						{#if userStats.bio}
-							<p class="user-bio">{userStats.bio}</p>
-						{/if}
-					</div>
+	{#if !$settings.githubUsername}
+		<div class="github-stats__empty">
+			<Github size={32} class="text-zinc-600" />
+			<p class="mt-3 text-center font-mono text-xs text-zinc-500">
+				Set your GitHub username in settings
+			</p>
+		</div>
+	{:else if error}
+		<div class="github-stats__error">
+			<Github size={24} class="text-zinc-600" />
+			<p class="mt-2 text-center font-mono text-xs text-red-400">{error}</p>
+			<button onclick={handleRefresh} class="github-stats__refresh-btn mt-3">
+				<RefreshCw size={14} class={refreshing ? 'animate-spin' : ''} />
+				Retry
+			</button>
+		</div>
+	{:else if userStats}
+		<div class="github-stats">
+			<!-- User Profile Section -->
+			<div class="user-profile">
+				<img src={userStats.avatar_url} alt={userStats.login} class="user-avatar" />
+				<div class="user-info">
+					<h3 class="user-name">{userStats.login}</h3>
+					{#if userStats.bio}
+						<p class="user-bio">{userStats.bio}</p>
+					{/if}
 				</div>
+			</div>
 
-				<!-- Stats Labels -->
-				<div class="repos-stats-row">
-					<div class="stat-item">
-						<span class="stat-value">{userStats.public_repos}</span>
-						<span class="stat-label">REPOS</span>
-					</div>
-					<div class="stat-item">
-						<span class="stat-value">{totalStars}</span>
-						<span class="stat-label">STARS</span>
-					</div>
-					<div class="stat-item">
-						<span class="stat-value">{totalForks}</span>
-						<span class="stat-label">FORKS</span>
-					</div>
-					<div class="stat-item">
-						<span class="stat-value">{userStats.followers}</span>
-						<span class="stat-label">FOLLOWERS</span>
-					</div>
-					<div class="stat-item">
-						<span class="stat-value">{userStats.following}</span>
-						<span class="stat-label">FOLLOWING</span>
-					</div>
+			<!-- Stats Labels -->
+			<div class="repos-stats-row">
+				<div class="stat-item">
+					<span class="stat-value">{userStats.public_repos}</span>
+					<span class="stat-label">REPOS</span>
 				</div>
+				<div class="stat-item">
+					<span class="stat-value">{totalStars}</span>
+					<span class="stat-label">STARS</span>
+				</div>
+				<div class="stat-item">
+					<span class="stat-value">{totalForks}</span>
+					<span class="stat-label">FORKS</span>
+				</div>
+				<div class="stat-item">
+					<span class="stat-value">{userStats.followers}</span>
+					<span class="stat-label">FOLLOWERS</span>
+				</div>
+				<div class="stat-item">
+					<span class="stat-value">{userStats.following}</span>
+					<span class="stat-label">FOLLOWING</span>
+				</div>
+			</div>
 
-				<!-- Recent Repos -->
-				{#if userRepos.length > 0}
-					<div class="github-stats__repos">
-						<h4 class="github-stats__repos-title">Recent Repos</h4>
-						<div class="github-stats__repos-list">
-							{#each userRepos as repo}
-								<a
-									href={repo.html_url}
-									target="_blank"
-									rel="noopener noreferrer"
-									class="github-stats__repo"
-								>
-									<div class="github-stats__repo-header">
-										<span class="github-stats__repo-name">{repo.name}</span>
-										<span class="github-stats__repo-time">{getTimeAgo(repo.updated_at)}</span>
-									</div>
-									{#if repo.description}
-										<p class="github-stats__repo-desc">{repo.description}</p>
+			<!-- Recent Repos -->
+			{#if userRepos.length > 0}
+				<div class="github-stats__repos">
+					<h4 class="github-stats__repos-title">Recent Repos</h4>
+					<div class="github-stats__repos-list">
+						{#each userRepos as repo (repo.full_name)}
+							<a
+								href={repo.html_url}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="github-stats__repo"
+							>
+								<div class="github-stats__repo-header">
+									<span class="github-stats__repo-name">{repo.name}</span>
+									<span class="github-stats__repo-time">{getTimeAgo(repo.updated_at)}</span>
+								</div>
+								{#if repo.description}
+									<p class="github-stats__repo-desc">{repo.description}</p>
+								{/if}
+								<div class="github-stats__repo-footer">
+									{#if repo.language}
+										<span class="github-stats__repo-lang">{repo.language}</span>
 									{/if}
-									<div class="github-stats__repo-footer">
-										{#if repo.language}
-											<span class="github-stats__repo-lang">{repo.language}</span>
-										{/if}
-										<div class="github-stats__repo-stats">
-											<span class="flex items-center gap-1">
-												<Star size={10} />
-												{repo.stargazers_count}
-											</span>
-											<span class="flex items-center gap-1">
-												<GitFork size={10} />
-												{repo.forks_count}
-											</span>
-										</div>
+									<div class="github-stats__repo-stats">
+										<span class="flex items-center gap-1">
+											<Star size={10} />
+											{repo.stargazers_count}
+										</span>
+										<span class="flex items-center gap-1">
+											<GitFork size={10} />
+											{repo.forks_count}
+										</span>
 									</div>
-								</a>
-							{/each}
-						</div>
+								</div>
+							</a>
+						{/each}
 					</div>
-				{/if}
-			</div>
-		{:else}
-			<div class="github-stats__empty">
-				<Github size={32} class="text-zinc-600" />
-				<p class="mt-3 text-center font-mono text-xs text-zinc-500">Loading GitHub data...</p>
-			</div>
-		{/if}
-	{/snippet}
+				</div>
+			{/if}
+		</div>
+	{:else}
+		<div class="github-stats__empty">
+			<Github size={32} class="text-zinc-600" />
+			<p class="mt-3 text-center font-mono text-xs text-zinc-500">Loading GitHub data...</p>
+		</div>
+	{/if}
 </Card>
 
 <style>

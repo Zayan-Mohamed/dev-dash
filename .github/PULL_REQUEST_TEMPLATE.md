@@ -26,18 +26,16 @@ Fixes # <!-- Link to issue: "Fixes #123" -->
 
 <!-- List the specific changes in this PR -->
 
-- 
-- 
-- 
-
----
+-
+-
+- ***
 
 ## Screenshots / Demo
 
 <!-- If your change affects the UI, include before/after screenshots or a short screen recording. -->
 
 | Before | After |
-|--------|-------|
+| ------ | ----- |
 |        |       |
 
 ---

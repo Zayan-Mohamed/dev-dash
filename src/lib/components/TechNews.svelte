@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Newspaper, ExternalLink } from 'lucide-svelte';
+	import { Newspaper } from 'lucide-svelte';
 	import Card from './Card.svelte';
 
 	let { animationDelay = 0 }: { animationDelay?: number } = $props();
@@ -45,7 +45,7 @@
 			if (failures.length > 0) {
 				console.warn(`Failed to fetch ${failures.length} stories from Hacker News`);
 			}
-		} catch (err) {
+		} catch {
 			error = 'Failed to load news';
 		} finally {
 			loading = false;
@@ -62,7 +62,7 @@
 
 		{#if loading}
 			<div class="tech-news__loading">
-				{#each Array(5) as _}
+				{#each Array(5) as _, i (i)}
 					<div class="tech-news__skeleton"></div>
 				{/each}
 			</div>
@@ -70,7 +70,7 @@
 			<div class="tech-news__error">{error}</div>
 		{:else}
 			<div class="tech-news__list">
-				{#each stories as story}
+				{#each stories as story (story.id)}
 					<a href={story.url} target="_blank" rel="noopener noreferrer" class="tech-news__story">
 						<span class="tech-news__story-title">{story.title}</span>
 						<div class="tech-news__story-meta">

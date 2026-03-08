@@ -203,7 +203,7 @@
 
 		{#if showSuggestions && suggestions().length > 0}
 			<div class="omnibar-suggestions">
-				{#each suggestions() as suggestion}
+				{#each suggestions() as suggestion (suggestion.prefix)}
 					<button
 						type="button"
 						class="omnibar-suggestion"

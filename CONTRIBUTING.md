@@ -160,19 +160,19 @@ src/
 ```typescript
 // ✓ Explicit types
 interface Site {
-  title: string;
-  url: string;
+	title: string;
+	url: string;
 }
 
 // ✓ Type narrowing
 function isExtension(): boolean {
-  return typeof chrome !== 'undefined' && !!chrome.topSites;
+	return typeof chrome !== 'undefined' && !!chrome.topSites;
 }
 
 // ✓ Typed props in components
 interface Props {
-  sites: Site[];
-  onSelect?: (site: Site) => void;
+	sites: Site[];
+	onSelect?: (site: Site) => void;
 }
 let { sites, onSelect }: Props = $props();
 ```
@@ -184,7 +184,7 @@ let { sites, onSelect }: Props = $props();
 const data: any = {};
 
 // ✗ Implicit types
-function process(input) { }
+function process(input) {}
 
 // ✗ Untyped props
 let { data } = $props();
@@ -234,23 +234,23 @@ Always wrap Chrome API calls with environment checks:
 ```typescript
 // ✓ Safe Chrome API call
 export async function getTopSites(): Promise<Site[]> {
-  const isExtension = typeof chrome !== 'undefined' && !!chrome.topSites;
+	const isExtension = typeof chrome !== 'undefined' && !!chrome.topSites;
 
-  if (!isExtension) {
-    // Return mock data for development
-    return MOCK_SITES;
-  }
+	if (!isExtension) {
+		// Return mock data for development
+		return MOCK_SITES;
+	}
 
-  try {
-    const sites = await chrome.topSites.get();
-    return sites.map(site => ({
-      title: site.title,
-      url: site.url
-    }));
-  } catch (error) {
-    console.error('Failed to fetch top sites:', error);
-    return [];
-  }
+	try {
+		const sites = await chrome.topSites.get();
+		return sites.map((site) => ({
+			title: site.title,
+			url: site.url
+		}));
+	} catch (error) {
+		console.error('Failed to fetch top sites:', error);
+		return [];
+	}
 }
 ```
 
@@ -415,13 +415,13 @@ import { describe, it, expect } from 'vitest';
 import { formatTime } from './time';
 
 describe('formatTime', () => {
-  it('formats 24-hour time correctly', () => {
-    expect(formatTime(14, 30, true)).toBe('14:30');
-  });
+	it('formats 24-hour time correctly', () => {
+		expect(formatTime(14, 30, true)).toBe('14:30');
+	});
 
-  it('formats 12-hour time correctly', () => {
-    expect(formatTime(14, 30, false)).toBe('2:30 PM');
-  });
+	it('formats 12-hour time correctly', () => {
+		expect(formatTime(14, 30, false)).toBe('2:30 PM');
+	});
 });
 ```
 
@@ -433,12 +433,12 @@ Located in `tests/`:
 import { test, expect } from '@playwright/test';
 
 test('omnibar opens and accepts input', async ({ page }) => {
-  await page.goto('http://localhost:5173');
+	await page.goto('http://localhost:5173');
 
-  const input = page.locator('input[type="text"]');
-  await input.fill('g svelte');
+	const input = page.locator('input[type="text"]');
+	await input.fill('g svelte');
 
-  await expect(input).toHaveValue('g svelte');
+	await expect(input).toHaveValue('g svelte');
 });
 ```
 

@@ -65,7 +65,7 @@
 		try {
 			console.log('Saving notepads:', notepads.length, notepads);
 			// Convert proxy to plain array for storage
-			const plainNotepads = notepads.map(n => ({
+			const plainNotepads = notepads.map((n) => ({
 				id: n.id,
 				title: n.title,
 				content: n.content,
@@ -200,45 +200,45 @@
 		<!-- Tabs -->
 		<div class="notepad-tabs">
 			{#each notepads as notepad (notepad.id)}
-					<div class="notepad-tab-wrapper">
+				<div class="notepad-tab-wrapper">
+					<button
+						onclick={() => switchNotepad(notepad.id)}
+						class="notepad-tab {activeNotepadId === notepad.id ? 'notepad-tab--active' : ''}"
+						title={notepad.title}
+						aria-label="Switch to {notepad.title}"
+					>
+						<span class="notepad-tab-title">{notepad.title}</span>
+					</button>
+					{#if notepads.length > 1}
 						<button
-							onclick={() => switchNotepad(notepad.id)}
-							class="notepad-tab {activeNotepadId === notepad.id ? 'notepad-tab--active' : ''}"
-							title={notepad.title}
-							aria-label="Switch to {notepad.title}"
+							onclick={() => deleteNotepad(notepad.id)}
+							class="notepad-tab-delete"
+							title="Delete {notepad.title}"
+							aria-label="Delete {notepad.title}"
 						>
-							<span class="notepad-tab-title">{notepad.title}</span>
+							<X size={12} />
 						</button>
-						{#if notepads.length > 1}
-							<button
-								onclick={() => deleteNotepad(notepad.id)}
-								class="notepad-tab-delete"
-								title="Delete {notepad.title}"
-								aria-label="Delete {notepad.title}"
-							>
-								<X size={12} />
-							</button>
-						{/if}
-					</div>
-				{/each}
-			</div>
+					{/if}
+				</div>
+			{/each}
+		</div>
 
-			<!-- Active Notepad Content -->
-			{#if !isCollapsed && activeNotepadId}
-				{@const activeNotepad = notepads.find((n) => n.id === activeNotepadId)}
-				{#if activeNotepad}
-					<div class="notepad-content">
-						<textarea
+		<!-- Active Notepad Content -->
+		{#if !isCollapsed && activeNotepadId}
+			{@const activeNotepad = notepads.find((n) => n.id === activeNotepadId)}
+			{#if activeNotepad}
+				<div class="notepad-content">
+					<textarea
 						bind:value={activeNotepad.content}
 						oninput={() => handleContentChange(activeNotepad.id)}
 						class="notepad-textarea"
-							placeholder="Start typing..."
-							spellcheck="false"
-							aria-label="{activeNotepad.title} content"
-						></textarea>
-					</div>
-				{/if}
+						placeholder="Start typing..."
+						spellcheck="false"
+						aria-label="{activeNotepad.title} content"
+					></textarea>
+				</div>
 			{/if}
+		{/if}
 	</div>
 </Card>
 

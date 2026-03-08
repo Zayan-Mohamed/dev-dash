@@ -21,7 +21,7 @@
 
 	{#if loading}
 		<div class="top-sites-grid">
-			{#each Array(6) as _, i}
+			{#each Array(6) as _, i (i)}
 				<div class="top-site-skeleton">
 					<div class="top-site-skeleton__icon"></div>
 					<div class="top-site-skeleton__text"></div>
