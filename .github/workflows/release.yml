@@ -51,53 +51,23 @@ jobs:
         id: version
         run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
 
+      - name: Extract release notes from CHANGELOG
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          awk "/^## \[${VERSION}\]/{found=1; next} found && /^## \[/{exit} found{print}" CHANGELOG.md \
+            | sed '/^[[:space:]]*$/d' > release_notes.txt
+          echo "--- release notes ---"
+          cat release_notes.txt
+
       - name: Create release zip
         run: |
           cd build
           zip -r ../dev-dash-${{ steps.version.outputs.version }}.zip .
-          cd ..
-
-      - name: Extract release notes from CHANGELOG
-        id: changelog
-        uses: actions/github-script@v7
-        with:
-          result-encoding: string
-          script: |
-            const fs = require('fs');
-            const changelog = fs.readFileSync('CHANGELOG.md', 'utf8');
-            const version = '${{ steps.version.outputs.version }}';
-            // Match the section for this version
-            const regex = new RegExp(
-              `## \\[${version.replace(/\./g, '\\.')}\\].*?\\n([\\s\\S]*?)(?=\\n## \\[|$)`
-            );
-            const match = changelog.match(regex);
-            return match ? match[1].trim() : `Release ${version}`;
 
       - name: Create GitHub Release
-        uses: actions/github-script@v7
+        uses: softprops/action-gh-release@v2
         with:
-          script: |
-            const fs = require('fs');
-            const version = '${{ steps.version.outputs.version }}';
-            const zipPath = `dev-dash-${version}.zip`;
-            const zipData = fs.readFileSync(zipPath);
-
-            const release = await github.rest.repos.createRelease({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              tag_name: context.ref.replace('refs/tags/', ''),
-              name: `DevDash v${version}`,
-              body: `${{ steps.changelog.outputs.result }}`,
-              draft: false,
-              prerelease: context.ref.includes('-'),
-            });
-
-            await github.rest.repos.uploadReleaseAsset({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              release_id: release.data.id,
-              name: zipPath,
-              data: zipData,
-            });
-
-            core.notice(`Release created: ${release.data.html_url}`);
+          name: 'DevDash v${{ steps.version.outputs.version }}'
+          body_path: release_notes.txt
+          files: dev-dash-${{ steps.version.outputs.version }}.zip
+          prerelease: ${{ contains(github.ref_name, '-') }}
