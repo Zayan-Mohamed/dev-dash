@@ -191,7 +191,7 @@
 		border-color: var(--color-accent);
 	}
 
-	.system-stats__icon {
+	:global(.system-stats__icon) {
 		color: var(--color-text-secondary);
 		flex-shrink: 0;
 	}
@@ -214,7 +214,7 @@
 			padding: var(--space-1);
 		}
 
-		.system-stats__icon {
+		:global(.system-stats__icon) {
 			width: 14px;
 			height: 14px;
 		}

@@ -10,6 +10,9 @@
 		const s = seconds % 60;
 		return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
 	}
+	let progress = $derived(
+		pomodoroState.timeLeft / (pomodoroState.mode === 'work' ? 25 * 60 : 5 * 60)
+	);
 </script>
 
 <Card variant="hero" elevation="medium" class="pomodoro-card" {animationDelay}>
@@ -31,9 +34,40 @@
 			{/if}
 		</div>
 
-		<!-- Timer Display -->
-		<div class="pomodoro-timer">
-			{formatTime(pomodoroState.timeLeft)}
+		<!-- Compact Timer Display with Vertical Gooey Bar -->
+		<div class="pomodoro-timer-wrapper">
+			<div class="pomodoro-timer">
+				{formatTime(pomodoroState.timeLeft)}
+			</div>
+
+			<!-- Vertical Gooey Bar -->
+			<div class="gooey-vertical-wrapper">
+				<svg width="0" height="0">
+					<filter id="goo-pomo">
+						<feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
+						<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
+						<feBlend in="SourceGraphic" in2="goo" />
+					</filter>
+				</svg>
+
+				<div class="gooey-vertical-container">
+					<div class="gooey-track"></div>
+					<!-- The liquid filling upwards -->
+					<div class="gooey-fill" 
+						 class:bg-blue-400={pomodoroState.mode === 'work'}
+						 class:bg-green-400={pomodoroState.mode === 'break'}
+						 style="height: {progress * 100}%; bottom: 0;"></div>
+					<!-- Bubbles rising -->
+					<div class="gooey-bubble gb-1"
+						 class:bg-blue-400={pomodoroState.mode === 'work'}
+						 class:bg-green-400={pomodoroState.mode === 'break'}
+						 style="bottom: {progress * 100}%"></div>
+					<div class="gooey-bubble gb-2"
+						 class:bg-blue-400={pomodoroState.mode === 'work'}
+						 class:bg-green-400={pomodoroState.mode === 'break'}
+						 style="bottom: {progress * 100}%"></div>
+				</div>
+			</div>
 		</div>
 
 		<!-- Action Buttons -->
@@ -81,10 +115,11 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		justify-content: center;
+		justify-content: space-between;
 		gap: var(--space-3);
 		padding: var(--space-4) 0;
 		min-height: 280px;
+		height: 100%;
 	}
 
 	.pomodoro-header {
@@ -94,7 +129,6 @@
 		padding-bottom: var(--space-2);
 		border-bottom: 1px solid var(--color-border);
 		width: fit-content;
-		margin-bottom: var(--space-3);
 	}
 
 	.pomodoro-title {
@@ -113,7 +147,106 @@
 		font-family: var(--font-mono);
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
-		margin-bottom: var(--space-2);
+	}
+
+	.pomodoro-timer-wrapper {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-4);
+		flex: 1; /* Stretch to occupy middle space natively matching Clock layout */
+		width: 100%;
+	}
+
+	.gooey-vertical-wrapper {
+		position: relative;
+		width: 24px;
+		height: 80px; /* fixed neat height for the vertical tube */
+		display: flex;
+		justify-content: center;
+	}
+
+	.gooey-vertical-container {
+		position: relative;
+		width: 6px;
+		height: 100%;
+		filter: url('#goo-pomo');
+	}
+
+	.gooey-track {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: var(--color-surface-3);
+		border-radius: var(--radius-full);
+		opacity: 0.3;
+	}
+
+	.gooey-fill {
+		position: absolute;
+		left: 0;
+		width: 100%;
+		border-radius: var(--radius-full);
+		transition: height 1s linear, background-color 0.3s ease;
+	}
+
+	.gooey-bubble {
+		position: absolute;
+		left: 50%;
+		transform: translateX(-50%);
+		border-radius: 50%;
+		transition: background-color 0.3s ease;
+	}
+
+	.gb-1 {
+		width: 10px;
+		height: 10px;
+		animation: float-bubble 3s infinite ease-in;
+	}
+
+	.gb-2 {
+		width: 6px;
+		height: 6px;
+		animation: float-bubble 2s infinite ease-in 1s;
+	}
+
+	@keyframes float-bubble {
+		0% {
+			transform: translate(-50%, 0) scale(1);
+			opacity: 1;
+		}
+		50% {
+			transform: translate(-50%, -15px) scale(0.6);
+		}
+		100% {
+			transform: translate(-50%, -30px) scale(0);
+			opacity: 0;
+		}
+	}
+
+	/* Utility classes injected by Svelte class directives */
+	.bg-blue-400 {
+		background-color: var(--color-blue-400, #60a5fa);
+		box-shadow: 0 0 10px rgba(96, 165, 250, 0.4);
+	}
+
+	.bg-green-400 {
+		background-color: var(--color-green-400, #4ade80);
+		box-shadow: 0 0 10px rgba(74, 222, 128, 0.4);
+	}
+
+	/* Utility classes injected by Svelte class directives */
+	.bg-blue-400 {
+		background-color: var(--color-blue-400, #60a5fa);
+		box-shadow: 0 0 10px rgba(96, 165, 250, 0.4);
+	}
+
+	.bg-green-400 {
+		background-color: var(--color-green-400, #4ade80);
+		box-shadow: 0 0 10px rgba(74, 222, 128, 0.4);
 	}
 
 	.pomodoro-timer {
@@ -123,10 +256,7 @@
 		color: var(--color-text-primary);
 		font-variant-numeric: tabular-nums;
 		letter-spacing: -0.02em;
-		flex: 1;
-		display: flex;
-		align-items: center;
-		justify-content: center;
+		z-index: 1;
 	}
 
 	.pomodoro-actions {

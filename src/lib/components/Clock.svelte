@@ -18,6 +18,9 @@
 	let greeting = $state('');
 	let date = $state('');
 	let displayName = $state('');
+	let secondsProgress = $state(0);
+	
+	let rafId: number;
 
 	function updateTime() {
 		const now = new Date();
@@ -29,6 +32,10 @@
 			month: 'long',
 			day: 'numeric'
 		});
+		
+		// Calculate seconds including milliseconds for smooth ring animation
+		secondsProgress = (now.getSeconds() + now.getMilliseconds() / 1000) / 60;
+		rafId = requestAnimationFrame(updateTime);
 	}
 
 	onMount(() => {
@@ -38,11 +45,14 @@
 			showGreeting = settings.showGreeting ?? true;
 		});
 
-		updateTime();
-		const interval = setInterval(updateTime, 1000);
+		rafId = requestAnimationFrame(updateTime);
 
-		return () => clearInterval(interval);
+		return () => cancelAnimationFrame(rafId);
 	});
+
+	// Calculate gooey horizontal progress values
+	let strokeWidth = 10;
+	let barWidth = 260;
 </script>
 
 <Card variant="hero" elevation="medium" class="clock-hero" {animationDelay}>
@@ -52,9 +62,34 @@
 				{greeting}{displayName ? `, ${displayName}` : ''}
 			</h2>
 		{/if}
-		<div class="clock-hero__time">
-			{time}
+		
+		<div class="clock-hero__time-wrapper">
+			<div class="clock-hero__time">
+				{time}
+			</div>
+
+			<!-- Gooey Linear Seconds Progress Bar -->
+			<div class="gooey-bar-wrapper">
+				<svg width="0" height="0">
+					<filter id="goo">
+						<feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
+						<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 15 -7" result="goo" />
+						<feBlend in="SourceGraphic" in2="goo" />
+					</filter>
+				</svg>
+
+				<div class="gooey-bar-container">
+					<!-- Base Track -->
+					<div class="gooey-track"></div>
+					<!-- Filling track -->
+					<div class="gooey-fill" style="width: {secondsProgress * 100}%"></div>
+					<!-- Drops separating/merging at the tip -->
+					<div class="gooey-drop drop-1" style="left: calc({secondsProgress * 100}% + 4px)"></div>
+					<div class="gooey-drop drop-2" style="left: calc({secondsProgress * 100}% + 12px)"></div>
+				</div>
+			</div>
 		</div>
+
 		<div class="clock-hero__date">
 			{date}
 		</div>
@@ -111,6 +146,87 @@
 		padding: var(--space-4) 0;
 	}
 
+	.clock-hero__time-wrapper {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		gap: var(--space-4);
+		margin: var(--space-2) 0;
+	}
+
+	.gooey-bar-wrapper {
+		width: 260px;
+		position: relative;
+		height: 20px; /* enough space for gooey blur */
+		display: flex;
+		align-items: center;
+	}
+
+	.gooey-bar-container {
+		width: 100%;
+		height: 4px;
+		position: relative;
+		filter: url('#goo');
+		display: flex;
+		align-items: center;
+	}
+
+	.gooey-track {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: var(--color-surface-3);
+		border-radius: var(--radius-full);
+		opacity: 0.3;
+	}
+
+	.gooey-fill {
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 100%;
+		background: var(--color-accent);
+		border-radius: var(--radius-full);
+		box-shadow: 0 0 10px var(--color-accent);
+		transition: width 0.1s linear; /* smooth out tiny frame jumps */
+	}
+
+	.gooey-drop {
+		position: absolute;
+		width: 6px;
+		height: 6px;
+		background: var(--color-accent);
+		border-radius: 50%;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+
+	.drop-1 {
+		animation: pulse-drop 2s infinite ease-in-out;
+	}
+
+	.drop-2 {
+		animation: pulse-drop 2s infinite ease-in-out reverse;
+		width: 4px;
+		height: 4px;
+	}
+
+	@keyframes pulse-drop {
+		0%, 100% {
+			transform: translate(0, -50%) scale(1);
+			opacity: 1;
+		}
+		50% {
+			transform: translate(10px, -50%) scale(0.5);
+			opacity: 0.5;
+		}
+	}
+
 	.clock-hero__greeting {
 		font-size: var(--font-size-lg);
 		font-family: 'Courier New', monospace;
@@ -122,16 +238,16 @@
 	}
 
 	.clock-hero__time {
-		font-size: clamp(3rem, 7vw, 5rem);
+		font-size: clamp(2.5rem, 6vw, 4rem);
 		font-family: 'Courier New', monospace;
 		font-weight: var(--font-weight-bold);
 		color: var(--color-text-primary);
 		font-variant-numeric: tabular-nums;
 		letter-spacing: var(--letter-spacing-tight);
 		text-shadow:
-			0 0 20px rgba(88, 166, 255, 0.3),
-			0 0 40px rgba(88, 166, 255, 0.2);
-		animation: time-transition var(--duration-normal) var(--easing-standard);
+			0 0 15px rgba(88, 166, 255, 0.4),
+			0 0 30px rgba(88, 166, 255, 0.2);
+		z-index: 1;
 	}
 
 	.clock-hero__date {

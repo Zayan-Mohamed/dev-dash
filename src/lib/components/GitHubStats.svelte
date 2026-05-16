@@ -2,6 +2,8 @@
 	import { Github, Star, GitFork, RefreshCw } from 'lucide-svelte';
 	import { settings } from '$lib/stores/settings';
 	import Card from './Card.svelte';
+	import ErrorState from './ErrorState.svelte';
+	import LoadingState from './LoadingState.svelte';
 
 	let { animationDelay = 0 }: { animationDelay?: number } = $props();
 
@@ -150,14 +152,12 @@
 			</p>
 		</div>
 	{:else if error}
-		<div class="github-stats__error">
-			<Github size={24} class="text-zinc-600" />
-			<p class="mt-2 text-center font-mono text-xs text-red-400">{error}</p>
+		<ErrorState message={error} className="h-full border-none">
 			<button onclick={handleRefresh} class="github-stats__refresh-btn mt-3">
 				<RefreshCw size={14} class={refreshing ? 'animate-spin' : ''} />
 				Retry
 			</button>
-		</div>
+		</ErrorState>
 	{:else if userStats}
 		<div class="github-stats">
 			<!-- User Profile Section -->
@@ -460,7 +460,6 @@
 		font-family: 'Courier New', monospace;
 	}
 
-	.github-stats__error,
 	.github-stats__empty {
 		display: flex;
 		flex-direction: column;

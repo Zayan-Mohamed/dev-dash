@@ -11,6 +11,7 @@
 		RefreshCw
 	} from 'lucide-svelte';
 	import Card from './Card.svelte';
+	import ErrorState from './ErrorState.svelte';
 	import { weatherState, weatherActions } from '$lib/stores/weather.svelte';
 
 	let { animationDelay = 0 }: { animationDelay?: number } = $props();
@@ -65,14 +66,12 @@
 	class="weather-card"
 >
 	{#if weatherState.error}
-		<div class="weather__error">
-			<Cloud size={24} class="text-zinc-600" />
-			<p class="mt-2 text-center font-mono text-xs text-red-400">{weatherState.error}</p>
+		<ErrorState message={weatherState.error} className="h-full border-none">
 			<button onclick={handleRefresh} class="weather__refresh-btn mt-3">
 				<RefreshCw size={14} class={weatherState.refreshing ? 'animate-spin' : ''} />
 				Retry
 			</button>
-		</div>
+		</ErrorState>
 	{:else if weatherState.data}
 		<div class="weather">
 			<!-- Weather Header -->
@@ -180,15 +179,6 @@
 		flex: 1;
 		min-height: 0;
 		padding: var(--space-2) 0;
-	}
-
-	.weather__error {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		height: 100%;
-		min-height: 200px;
 	}
 
 	.weather__refresh-btn {

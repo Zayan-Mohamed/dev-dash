@@ -10,6 +10,8 @@
 	import Weather from '$lib/components/Weather.svelte';
 	import TechNews from '$lib/components/TechNews.svelte';
 	import GitHubStats from '$lib/components/GitHubStats.svelte';
+	import ErrorState from '$lib/components/ErrorState.svelte';
+	import LoadingState from '$lib/components/LoadingState.svelte';
 	import { getTopSites } from '$lib/services/topSites';
 	import type { Site } from '$lib/services/topSites';
 	import { settings } from '$lib/stores/settings';
@@ -133,15 +135,9 @@
 			<!-- Top Sites Grid -->
 			{#if $settings.showTopSites}
 				{#if loading}
-					<div class="loading-state" role="status" aria-live="polite">
-						<div class="loading-spinner"></div>
-						<span class="loading-text">Loading your sites...</span>
-					</div>
+					<LoadingState message="Loading your sites..." />
 				{:else if error}
-					<div class="error-state" role="alert">
-						<span class="error-icon">⚠️</span>
-						<span class="error-text">{error}</span>
-					</div>
+					<ErrorState message={error} />
 				{:else}
 					<TopSites {sites} animationDelay={300} />
 				{/if}
@@ -198,64 +194,6 @@
 		outline: none;
 	}
 
-	.loading-state {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: var(--space-4);
-		padding: var(--space-12);
-		background: var(--color-surface-1);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-lg);
-		min-height: 200px;
-	}
-
-	.loading-spinner {
-		width: 32px;
-		height: 32px;
-		border: 3px solid var(--color-surface-3);
-		border-top-color: var(--color-accent);
-		border-radius: var(--radius-full);
-		animation: spin 0.8s linear infinite;
-	}
-
-	.loading-text {
-		font-family: var(--font-mono);
-		font-size: var(--font-size-sm);
-		color: var(--color-text-secondary);
-	}
-
-	.error-state {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: var(--space-3);
-		padding: var(--space-8);
-		background: var(--color-surface-1);
-		border: 1px solid var(--color-error);
-		border-radius: var(--radius-lg);
-		min-height: 200px;
-	}
-
-	.error-icon {
-		font-size: var(--font-size-3xl);
-	}
-
-	.error-text {
-		font-family: var(--font-mono);
-		font-size: var(--font-size-sm);
-		color: var(--color-error);
-		text-align: center;
-	}
-
-	@keyframes spin {
-		to {
-			transform: rotate(360deg);
-		}
-	}
-
 	/* Responsive adjustments */
 	@media (max-width: 1024px) {
 		#main-content {
@@ -277,11 +215,6 @@
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.loading-spinner {
-			animation: none;
-			border-top-color: var(--color-accent);
-		}
-
 		.skip-link {
 			transition: none;
 		}

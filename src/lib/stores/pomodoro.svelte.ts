@@ -70,15 +70,7 @@ function saveState() {
 			lastUpdateTime: Date.now()
 		};
 		localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
-
-		// Dispatch custom event for cross-tab communication
-		window.dispatchEvent(
-			new StorageEvent('storage', {
-				key: STORAGE_KEY,
-				newValue: JSON.stringify(stateToSave),
-				storageArea: localStorage
-			})
-		);
+		// Native localStorage.setItem already fires the 'storage' event in other tabs.
 	} catch (error) {
 		console.error('Failed to save Pomodoro state:', error);
 	}

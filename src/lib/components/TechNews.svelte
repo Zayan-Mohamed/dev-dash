@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Newspaper } from 'lucide-svelte';
+	import { Terminal, ExternalLink } from 'lucide-svelte';
 	import Card from './Card.svelte';
+	import ErrorState from './ErrorState.svelte';
 
 	let { animationDelay = 0 }: { animationDelay?: number } = $props();
 
@@ -53,21 +54,15 @@
 	});
 </script>
 
-<Card variant="medium" elevation="medium" class="tech-news-card" {animationDelay}>
+<Card variant="medium" elevation="medium" class="tech-news-card" {loading} {animationDelay}>
 	<div class="tech-news">
 		<div class="tech-news__header">
-			<Newspaper size={12} class="text-orange-400" />
+			<Terminal size={12} class="text-orange-400" />
 			<h4 class="tech-news__title">Hacker News</h4>
 		</div>
 
-		{#if loading}
-			<div class="tech-news__loading">
-				{#each Array(5) as _, i (i)}
-					<div class="tech-news__skeleton"></div>
-				{/each}
-			</div>
-		{:else if error}
-			<div class="tech-news__error">{error}</div>
+		{#if error}
+			<ErrorState message={error} className="h-full border-none" />
 		{:else}
 			<div class="tech-news__list">
 				{#each stories as story (story.id)}
@@ -121,40 +116,6 @@
 		font-size: var(--font-size-base);
 		font-weight: var(--font-weight-semibold);
 		color: var(--color-text-primary);
-	}
-
-	.tech-news__loading {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-2);
-	}
-
-	.tech-news__skeleton {
-		height: 72px;
-		background: var(--color-surface-2);
-		border-radius: var(--radius-md);
-		animation: skeleton-loading 1.5s ease-in-out infinite;
-	}
-
-	@keyframes skeleton-loading {
-		0%,
-		100% {
-			opacity: 0.5;
-		}
-		50% {
-			opacity: 1;
-		}
-	}
-
-	.tech-news__error {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		height: 100%;
-		min-height: 200px;
-		font-size: var(--font-size-sm);
-		color: var(--color-error);
 	}
 
 	.tech-news__list {
@@ -224,7 +185,7 @@
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.tech-news__skeleton {
+		:global(.tech-news-card) {
 			animation: none;
 		}
 

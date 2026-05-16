@@ -189,43 +189,39 @@ async function fetchWeatherData(latitude: number, longitude: number): Promise<vo
 	}
 }
 
-// Get user's geolocation
-function getGeolocation(): Promise<{ latitude: number; longitude: number }> {
-	return new Promise((resolve, reject) => {
-		if (!navigator.geolocation) {
-			reject(new Error('Geolocation not supported'));
-			return;
-		}
-
-		navigator.geolocation.getCurrentPosition(
-			(position) => {
-				resolve({
-					latitude: position.coords.latitude,
-					longitude: position.coords.longitude
+async function getGeolocation(): Promise<{ latitude: number; longitude: number }> {
+	try {
+		// First try HTML5 Geolocation with a short timeout
+		if (navigator.geolocation) {
+			const pos = await new Promise<GeolocationPosition>((resolve, reject) => {
+				navigator.geolocation.getCurrentPosition(resolve, reject, {
+					timeout: 5000,
+					enableHighAccuracy: false,
+					maximumAge: 5 * 60 * 1000
 				});
-			},
-			(error) => {
-				let errorMessage = 'Failed to get location';
-				switch (error.code) {
-					case error.PERMISSION_DENIED:
-						errorMessage = 'Location access denied';
-						break;
-					case error.POSITION_UNAVAILABLE:
-						errorMessage = 'Location unavailable';
-						break;
-					case error.TIMEOUT:
-						errorMessage = 'Location request timeout';
-						break;
-				}
-				reject(new Error(errorMessage));
-			},
-			{
-				timeout: 10000,
-				enableHighAccuracy: false,
-				maximumAge: 5 * 60 * 1000 // Accept cached position up to 5 minutes old
-			}
-		);
-	});
+			});
+			return {
+				latitude: pos.coords.latitude,
+				longitude: pos.coords.longitude
+			};
+		}
+	} catch (error) {
+		console.warn('HTML5 Geolocation failed/denied, falling back to IP geolocation', error);
+	}
+
+	// Fallback to IP-based geolocation
+	try {
+		const ipGeoRes = await fetchWithTimeout('https://get.geojs.io/v1/ip/geo.json');
+		if (!ipGeoRes.ok) throw new Error('IP Geolocation failed');
+		const ipGeoData = await ipGeoRes.json();
+		return {
+			latitude: parseFloat(ipGeoData.latitude),
+			longitude: parseFloat(ipGeoData.longitude)
+		};
+	} catch (fallbackError) {
+		console.error('IP Geolocation fallback failed:', fallbackError);
+		throw new Error('Location unavailable');
+	}
 }
 
 // Weather actions

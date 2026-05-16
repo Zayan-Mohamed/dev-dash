@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { MapPin } from 'lucide-svelte';
+	import { MapPin, TriangleAlert } from 'lucide-svelte';
 	import { weatherState, weatherActions } from '$lib/stores/weather.svelte';
 
 	onMount(() => {
@@ -15,7 +15,7 @@
 	</div>
 {:else if weatherState.error}
 	<div class="compact-weather compact-weather--error">
-		<span class="compact-weather__error-icon">⚠️</span>
+		<span class="compact-weather__error-icon"><TriangleAlert size={14} /></span>
 	</div>
 {:else if weatherState.data}
 	<div class="compact-weather" title="Weather">
